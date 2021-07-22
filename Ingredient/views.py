@@ -29,6 +29,13 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
 
+    @action(detail= False)
+    def run_query(self, request):
+        instance = Ingredient.objects.raw('Select * from Ingredient where IngredientID = 200')
+        for i in instance:
+            print(i.ingredientid, i.ingredientname)
+        return Response({"response": {"error":"OK", "ingredientid": i.ingredientid, "ingredientname": i.ingredientname}, "status": 201}, status=status.HTTP_201_CREATED)
+
     @action(detail = False, methods=['post'])
     def search_name(self, request, pk= None):
         ingredientid = request.data.get('ingredientid')
