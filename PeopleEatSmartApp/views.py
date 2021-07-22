@@ -36,14 +36,20 @@ def show_recipe(request, recipe_id):
 
 
 def user_signup(request):
+    username = ""
+    password = ""
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = SignUpForm(request.POST)
+        if form.is_valid():
+            username= form.cleaned_data["UserName"]     
+            password= form.cleaned_data["Password"]
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO LoginInfo VALUES ('%s', '%s');"%(username, password))
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SignUpForm()
-    # Logininfo.objects.raw("INSERT INTO LoginInfo VALUES (%s, %s)", [form[UserName]], [form[Password]])
     return render(request, 'PeopleEatSmartApp/user_signup.html', {'form': form})
 
 

@@ -5,17 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
   </head>
+  <style> 
+    .center {
+        margin: auto;
+        width: 20%;
+        padding: 10px;
+        background-color: rgb(255, 255, 255); 
+        padding-bottom: 100px;
+    }
+
+    .user {
+        padding-top: 30px;
+    }
+    
+    .input {
+        font-size: 20px;
+    }
+
+    .submit {
+        margin-bottom: 3%;
+        max-width: 60%;
+        font-size: 20px;
+    }
+    
+    body {
+        font-family: Monaco, monospace;
+        font-size: 20px;
+    }
+  </style>
   <body>
-    <img src="../assets/title.png" alt='PeopleEatSmart'>
-    <h5 style="text-align: center; margin-top: 50px;"> I don't know why the ABOVE image is not displaying. </h5>
+    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
     <form action="" method="post">
         {% csrf_token %}
-        <div style="text-align: center;">
-            <label for="UserName">UserName: </label>
-            <input id="UserName" type="text" name="UserName" maxlength="100" required>
-            <label for="Password">Password: </label>
-            <input id="Password" type="text" name="Password" maxlength="100" required>
-            <input type="submit" value="Sign Up">
+        <div class="center">
+            <div class="user">
+                <label for="UserName">UserName: </label>
+                <br>
+                <input id="UserName" type="text" name="UserName" class="input" size=30 maxlength='100' required>
+                <br><br>
+                <label for="Password">Password: </label>
+                <br>
+                <input id="Password" type="text" name="Password" class="input" size=30 maxlength='100' required>
+                <br><br>
+                <input type="submit" class="submit" value="Sign Up">
+            </div>
         </div>
     </form>
   </body>
