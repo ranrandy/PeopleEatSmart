@@ -24,5 +24,6 @@ urlpatterns = [
     path('user-signup/', views.user_signup, name='user_signup'),
     path('user-reset-pw/', views.user_reset_pw, name='user_reset_pw'),
     path('user-delete/', views.user_delete, name='user_delete'),
+    path('query1/', views.run_advanced_query1, name='run_advanced_query1'), 
     # url('^', include('django.contrib.auth.urls'))
 ]

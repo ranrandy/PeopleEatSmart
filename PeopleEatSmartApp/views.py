@@ -10,6 +10,14 @@ from django.urls import reverse
 from django.db import connection
 
 
+# def executeSQL(sql):
+#     with connection.cursor() as cursor:
+#         cursor.execute(sql)
+#         columns = [col[0] for col in cursor.description]
+#         return [
+#             dict(zip(columns, row))
+#             for row in cursor.fetchall()
+#         ]
 def executeSQL(sql):
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -18,7 +26,6 @@ def executeSQL(sql):
             dict(zip(columns, row))
             for row in cursor.fetchall()
         ]
-
 def view_recipe(request):
     high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
     context = {'high_rating_recipe_list': high_rating_recipe_list}
@@ -138,3 +145,9 @@ def user_delete(request):
         form = SignUpForm()
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user_delete.html', context)
+
+def run_advanced_query1(request):
+    query = "SELECT IngredientName, COUNT(RecipeID) as randy FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = 'fiber' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 15;"
+    query_result = executeSQL(query)
+    context = {'query_result': query_result}
+    return render(request, 'PeopleEatSmartApp/query1.html', context)
