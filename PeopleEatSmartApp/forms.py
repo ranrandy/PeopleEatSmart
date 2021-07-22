@@ -18,4 +18,4 @@ class KeywordSearchRecipeForm(forms.Form):
 
 
 class AdvancedSearchForm(forms.Form):
-    NutrientName = forms.CharField(label="NutrientName", max_length=100)
+    NutrientName = forms.CharField(label="NutrientName", max_length=10000)
