@@ -10,14 +10,6 @@ from django.urls import reverse
 from django.db import connection
 
 
-# def executeSQL(sql):
-#     with connection.cursor() as cursor:
-#         cursor.execute(sql)
-#         columns = [col[0] for col in cursor.description]
-#         return [
-#             dict(zip(columns, row))
-#             for row in cursor.fetchall()
-#         ]
 def executeSQL(sql):
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -26,12 +18,16 @@ def executeSQL(sql):
             dict(zip(columns, row))
             for row in cursor.fetchall()
         ]
+
+
+# Show all the recipes, but has a limitation of 100 in 1 page.
 def view_recipe(request):
     high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
     context = {'high_rating_recipe_list': high_rating_recipe_list}
     return render(request, 'PeopleEatSmartApp/recipes.html', context)
 
 
+# Show certain recipe based on its RecipeID added at the end of the URL.
 def show_recipe(request, recipe_id):
     # try:
     #     # recipe = Recipe.objects.raw("SELECT * FROM Recipe WHERE RecipeID = %s", [recipe_id])[0]
@@ -43,6 +39,7 @@ def show_recipe(request, recipe_id):
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
 
 
+# Add ratings and comments for recipes.
 def rate_recipe(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -63,34 +60,50 @@ def rate_recipe(request):
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
 
+# Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
 def keyword_search_recipe(request):
     recipeInfo = []
     if request.method == 'POST':
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             recipe_name = form.cleaned_data["Name"]
-            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 10;".format(recipe_name))
+            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 50;".format(recipe_name))
     else:
         form = KeywordSearchRecipeForm()
     context = {'recipeInfo': recipeInfo}
     return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
 
 
+# First advanced query from stage 3.
 def advanced_search(request):
     recipeInfo = []
     if request.method == 'POST':
         form = AdvancedSearchForm(request.POST)
         if form.is_valid():
             nutrient_name = form.cleaned_data["NutrientName"]
-            recipeInfo = Micronutrient.objects.raw("SELECT * FROM Micronutrient where NutrientName = '{}';".format(nutrient_name))
-            # recipeInfo = executeSQL("SELECT * FROM Micronutrient where NutrientName = '{}';".format(nutrient_name))
-            # recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE m.NutrientName = '{}' AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe)".format(nutrient_name))
+            recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating, RecipeID FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE (m.NutrientName = '{}' OR m.NutrientName LIKE '%%{}%%') AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe) LIMIT 50;".format(nutrient_name, nutrient_name))
     else:
         form = KeywordSearchRecipeForm()
     context = {'recipeInfo': recipeInfo}
     return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
 
 
+# Second advanced query from stage 3.
+def advanced_search_2(request):
+    query_result = []
+    if request.method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+        if form.is_valid():
+            nutrient_name = form.cleaned_data["NutrientName"]
+            query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(nutrient_name, nutrient_name)
+            query_result = executeSQL(query)
+    else:
+        form = KeywordSearchRecipeForm()
+    context = {'query_result': query_result}
+    return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
+
+
+# Add a new user to the database
 def user_signup(request):
     username = ""
     password = ""
@@ -111,6 +124,7 @@ def user_signup(request):
     return render(request, 'PeopleEatSmartApp/user_signup.html', context)
 
 
+# Let user change the password
 def user_reset_pw(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -127,6 +141,7 @@ def user_reset_pw(request):
     return render(request, 'PeopleEatSmartApp/user_reset_pw.html', {'form': form})
 
 
+# Let user delete his / her account (username)
 def user_delete(request):
     username = ""
     password = ""
@@ -146,8 +161,3 @@ def user_delete(request):
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user_delete.html', context)
 
-def run_advanced_query1(request):
-    query = "SELECT IngredientName, COUNT(RecipeID) as randy FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = 'fiber' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 15;"
-    query_result = executeSQL(query)
-    context = {'query_result': query_result}
-    return render(request, 'PeopleEatSmartApp/query1.html', context)

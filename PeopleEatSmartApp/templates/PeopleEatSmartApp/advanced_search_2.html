@@ -37,34 +37,35 @@
   </style>
   <body>
     <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
-    <form action="" method="post">
-        {% csrf_token %}
-        <div class="center">
-            <div style="text-align: center;">
-                <label for="NutrientName">Micronutrient: </label>
-                <input id="NutrientName" type="text" name="NutrientName" class="input" size=50 maxlength='100'>
-                <input type="submit" class="submit" value="search">
-            </div>
-        </div>
-    </form>
     <br><br>
-    {% if recipeInfo %}
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="center">
+          <div style="text-align: center;">
+              <label for="NutrientName">Micronutrient: </label>
+              <input id="NutrientName" type="text" name="NutrientName" class="input" size=50 maxlength='100'>
+              <input type="submit" class="submit" value="search">
+          </div>
+      </div>
+    </form>
+    {% if query_result %}
         <div class="center">
             <table>
                 <tr>
-                    <th>Recipe Name</th>
-                    <th>Average Rating</th>
+                    <th>Ingredient name</th>
+                    <th>Count of Recipe</th>
                 </tr>
-                {% for recipe in recipeInfo %}
+                {% for i in query_result %}
                 <tr>
-                    <td><a href="{% url 'show_recipe' recipe.RecipeID %}">{{ recipe.Name }}</a></td>
-                    <td>{{ recipe.AvgRating }}</td>
+                    <td>{{ i.IngredientName }}</a></td>
+                    <td>{{ i.CountOfRecipe }}</td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
     {% else %}
-        <p style="text-align: center;">No such recipe</p>
+        <p style="text-align: center;">no query result</p>
     {% endif %}
+
   </body>
 </html>

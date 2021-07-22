@@ -8,8 +8,7 @@
   <style>
     .center {
         margin: auto;
-        max-width: 50%;
-        padding: 10px;
+        max-width: 60%;
         background-color: rgb(255, 255, 255); 
     }
 
@@ -27,6 +26,10 @@
         font-size: 20px;
     }
     
+    td {
+        text-align: center;
+    }
+
     body {
         font-family: Monaco, monospace;
         font-size: 20px;
@@ -46,13 +49,22 @@
     </form>
     <br><br>
     {% if recipeInfo %}
-        <div style="text-align: center;">
-          {% for recipe in recipeInfo %}
-            <a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.name }}</a><br>
-            <a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}"></a><br>
-            <p>Rating: {{ recipe.avgrating}} ({{ recipe.ratingcount}})</p>
-          {% endfor %}
-        </div>
+      <div class="center">
+          <table>
+              <tr>
+                  <th>Recipe Name</th>
+                  <th>Average Rating (#Ratings)</th>
+                  <th>Picture</th>
+              </tr>
+              {% for recipe in recipeInfo %}
+              <tr>
+                  <td><a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.name }}</a></td>
+                  <td>{{ recipe.avgrating}} ({{ recipe.ratingcount}})</td>
+                  <td><a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}" style="width: 40%;"></a><br>                  </td>
+              </tr>
+              {% endfor %}
+          </table>
+      </div>
     {% else %}
         <p style="text-align: center;">No such recipe</p>
     {% endif %}

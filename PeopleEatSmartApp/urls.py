@@ -21,9 +21,9 @@ urlpatterns = [
     path('recipe/keyword-search/', views.keyword_search_recipe, name='keyword_search_recipe'),
     path('recipe/rating/', views.rate_recipe, name='rate_recipe'),
     path('advanced-search/', views.advanced_search, name='advanced_search'),
+    path('advanced-search-2/', views.advanced_search_2, name='advanced_search_2'), 
     path('user-signup/', views.user_signup, name='user_signup'),
     path('user-reset-pw/', views.user_reset_pw, name='user_reset_pw'),
     path('user-delete/', views.user_delete, name='user_delete'),
-    path('query1/', views.run_advanced_query1, name='run_advanced_query1'), 
     # url('^', include('django.contrib.auth.urls'))
 ]
