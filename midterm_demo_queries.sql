@@ -14,6 +14,7 @@ INSERT INTO LoginInfo VALUES('Randy', '1234567');
 ########################################## FINISHED ##########################################
 
 
+########################################## FINISHED ##########################################
 # 2. Search (based on keyword) a recipe
 SELECT Name, PictureURL, AvgRating, RatingCount 
 FROM Recipe
@@ -21,6 +22,7 @@ WHERE Name LIKE '%spaghetti%';
 -- SELECT Name, PictureURL, AvgRating, RatingCount 
 -- FROM Recipe
 -- WHERE Name LIKE '%[keyword]%';
+########################################## FINISHED ##########################################
 
 
 ########################################## FINISHED ##########################################
@@ -34,11 +36,13 @@ WHERE UserName = 'Randy';
 ########################################## FINISHED ##########################################
 
 
+########################################## FINISHED ##########################################
 # 4. Delete username
 DELETE FROM LoginInfo
 WHERE UserName = 'Randy';
 -- DELETE FROM LoginInfo
 -- WHERE UserName = [username];
+########################################## FINISHED ##########################################
 
 
 
@@ -48,6 +52,7 @@ FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Conta
 WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = 'fiber'
 GROUP BY IngredientID
 ORDER BY COUNT(RecipeID) DESC;
+
 
 
 # 6. Stage 3 Advanced Query 2

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+  </head>
+  <style>
+    .center {
+        margin: auto;
+        max-width: 50%;
+        padding: 10px;
+        background-color: rgb(255, 255, 255); 
+    }
+
+    .user {
+        padding-top: 30px;
+    }
+    
+    .input {
+        font-size: 20px;
+    }
+
+    .submit {
+        margin-bottom: 3%;
+        max-width: 60%;
+        font-size: 20px;
+    }
+    
+    body {
+        font-family: Monaco, monospace;
+        font-size: 20px;
+    }
+  </style>
+  <body>
+    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="center">
+            <div style="text-align: center;">
+                <label for="Name">Micronutrient: </label>
+                <input id="Name" type="text" name="Name" class="input" size=50 maxlength='100'>
+                <input type="submit" class="submit" value="search">
+            </div>
+        </div>
+    </form>
+    <br><br>
+    {% if recipeInfo %}
+        <div style="text-align: center;">
+          {% for recipe in recipeInfo %}
+            <a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.nutrientname }}</a><br>
+            <!-- <a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}"></a><br> -->
+            <!-- <p>Rating: {{ recipe.avgrating }}</p> -->
+          {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No such recipe</p>
+    {% endif %}
+  </body>
+</html>

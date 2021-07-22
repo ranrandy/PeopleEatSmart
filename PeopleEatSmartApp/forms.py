@@ -12,6 +12,10 @@ class RatingCommentForm(forms.Form):
     Comment = forms.CharField(label="Comment", max_length=4096)
 
 
-class SearchRecipeForm(forms.Form):
+class KeywordSearchRecipeForm(forms.Form):
     # RecipeID = forms.IntegerField(label="RecipeID")
     Name = forms.CharField(label='Name')
+
+
+class AdvancedSearchForm(forms.Form):
+    NutrientName = forms.CharField(label="NutrientName", max_length=100)

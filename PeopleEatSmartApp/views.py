@@ -10,14 +10,14 @@ from django.urls import reverse
 from django.db import connection
 
 
-# def executeSQL(sql):
-#     with connection.cursor() as cursor:
-#         cursor.execute(sql)
-#         columns = [col[0] for col in cursor.description]
-#         return [
-#             dict(zip(columns, row))
-#             for row in cursor.fetchall()
-#         ]
+def executeSQL(sql):
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        columns = [col[0] for col in cursor.description]
+        return [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
 
 def view_recipe(request):
     high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
@@ -56,17 +56,32 @@ def rate_recipe(request):
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
 
-def search_recipe(request):
+def keyword_search_recipe(request):
     recipeInfo = []
     if request.method == 'POST':
-        form = SearchRecipeForm(request.POST)
+        form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             recipe_name = form.cleaned_data["Name"]
             recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 10;".format(recipe_name))
     else:
-        form = SearchRecipeForm()
+        form = KeywordSearchRecipeForm()
     context = {'recipeInfo': recipeInfo}
     return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
+
+
+def advanced_search(request):
+    recipeInfo = []
+    if request.method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+        if form.is_valid():
+            nutrient_name = form.cleaned_data["NutrientName"]
+            recipeInfo = Micronutrient.objects.raw("SELECT * FROM Micronutrient where NutrientName = '{}';".format(nutrient_name))
+            # recipeInfo = executeSQL("SELECT * FROM Micronutrient where NutrientName = '{}';".format(nutrient_name))
+            # recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE m.NutrientName = '{}' AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe)".format(nutrient_name))
+    else:
+        form = KeywordSearchRecipeForm()
+    context = {'recipeInfo': recipeInfo}
+    return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
 
 
 def user_signup(request):

@@ -35,3 +35,12 @@ class LoginInfoSerializer(serializers.ModelSerializer):
             'username',
             'password'
         )
+
+
+class MicronutrientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Micronutrient
+        fields = (
+            'nutrientid',
+            'nutrientname'
+        )
