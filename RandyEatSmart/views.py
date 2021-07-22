@@ -26,32 +26,31 @@ class RandyViewSet(viewsets.ModelViewSet):
         password = request.data.get('password', None)
 
         try:
-            user = RandyEatSmart.objects.get(username=username) 
-            # user = RandyEatSmart.objects.raw("SELECT password from RandyEatSmart_randyeatsmart where username = %s", [username])
+            # user = RandyEatSmart.objects.get(username=username)
+            user = RandyEatSmart.objects.raw("SELECT password from RandyEatSmart_randyeatsmart where username = %s", [username])
 
         except RandyEatSmart.DoesNotExist:
             new_user = RandyEatSmart(username=username, password=password)
             new_user.save()
-            return Response({"response": {"error":"OK", "id": new_user.id, 
-                                                        "username": new_user.username, 
-                                                        "password": new_user.password}, 
-                                                        "status": 201}, 
+            return Response({"response": {"error":"OK", "id": new_user.id,
+                                                        "username": new_user.username,
+                                                        "password": new_user.password},
+                                                        "status": 201},
                             status=status.HTTP_201_CREATED)
         else:
             return Response({"response": {"error":"This username already exists."}, "status": 400}, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class RandyView(APIView):
     serializer_class = RandySerializer
 
     def get(self, request):
-        loginInfo = [ {"name": user.name,"password": user.password} 
+        loginInfo = [ {"name": user.name,"password": user.password}
         for user in RandyEatSmart.objects.all()]
 
         return Response(loginInfo)
-  
+
     def post(self, request):
         serializer = RandySerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
-    
