@@ -1,0 +1,22 @@
+{
+  "name": "peopleeatsmart",
+  "version": "1.0.0",
+  "description": "CS 411 Project 1, Summer 2021",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "devStart": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ranrandy/PeopleEatSmart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ranrandy/PeopleEatSmart/issues"
+  },
+  "homepage": "https://github.com/ranrandy/PeopleEatSmart#readme"
+}
