@@ -16,8 +16,9 @@ router = DefaultRouter()
 
 # app_name = "PeopleEatSmart"
 urlpatterns = [
-    path('recipe/', views.search_recipe, name='search_recipe'),
+    path('recipe/', views.view_recipe, name='view_recipe'),
     path('recipe/<int:recipe_id>/', views.show_recipe, name='show_recipe'),
+    path('recipe/search/', views.search_recipe, name= 'search_recipe'),
     path('recipe/rating/', views.rate_recipe, name='rate_recipe'),
     path('user-signup/', views.user_signup, name='user_signup'),
     path('user-reset-pw/', views.user_reset_pw, name='user_reset_pw'),

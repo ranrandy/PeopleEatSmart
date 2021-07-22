@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+  </head>
+  <body>
+    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div>
+            <div>
+                <label for="RecipeID">RecipeID: </label>
+                <br>
+                <input id="RecipeID" type="number" name="RecipeID" class="input" size=50 maxlength='100'>
+                <br>
+                <input type="submit" class="submit" value="submit">
+            </div>
+        </div>
+    </form>
+    <br><br>
+    {% if recipeInfo %}
+        <div style="text-align: center;">
+          {% for recipe in recipeInfo %}
+            <a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.name }}</a><br>
+            <a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}"></a><br>
+            <p>Rating: {{ recipe.avgrating}} ({{ recipe.ratingcount}})</p>
+          {% endfor %}
+        </div>
+    {% else %}
+        <p>No such recipe</p>
+    {% endif %}
+
+  </body>
+</html>

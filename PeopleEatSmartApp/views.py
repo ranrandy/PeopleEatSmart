@@ -19,10 +19,11 @@ from django.db import connection
 #             for row in cursor.fetchall()
 #         ]
 
-def search_recipe(request):
-    high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe WHERE avgrating = 5.0 AND ratingcount > 10")
-    context = {'high_rating_recipe_list': high_rating_recipe_list}    
+def view_recipe(request):
+    high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
+    context = {'high_rating_recipe_list': high_rating_recipe_list}
     return render(request, 'PeopleEatSmartApp/recipes.html', context)
+
 
 
 def show_recipe(request, recipe_id):
@@ -42,7 +43,7 @@ def rate_recipe(request):
         # create a form instance and populate it with data from the request:
         form = RatingCommentForm(request.POST)
         if form.is_valid():
-            username= form.cleaned_data["UserName"]   
+            username= form.cleaned_data["UserName"]
             recipename = forms.cleaned_data["RecipeName"]
             ratingvalue= form.cleaned_data["RatingValue"]
             comment= form.cleaned_data["Comment"]
@@ -64,7 +65,7 @@ def user_signup(request):
         # create a form instance and populate it with data from the request:
         form = SignUpForm(request.POST)
         if form.is_valid():
-            username= form.cleaned_data["UserName"]     
+            username= form.cleaned_data["UserName"]
             password= form.cleaned_data["Password"]
             # if not username == "" and not password == ""
             cursor = connection.cursor()
@@ -75,6 +76,19 @@ def user_signup(request):
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user_signup.html', context)
 
+def search_recipe(request):
+    recipeInfo = []
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            recipe_id= form.cleaned_data["RecipeID"]
+            # if not username == "" and not password == ""
+            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where RecipeID = %s" %(recipe_id))
+    else:
+        form = SearchForm()
+    context = { 'form': form, 'recipeInfo':recipeInfo}
+    return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
+
 
 def user_reset_pw(request):
     # if this is a POST request we need to process the form data
@@ -82,7 +96,7 @@ def user_reset_pw(request):
         # create a form instance and populate it with data from the request:
         form = SignUpForm(request.POST)
         if form.is_valid():
-            username= form.cleaned_data["UserName"]     
+            username= form.cleaned_data["UserName"]
             password= form.cleaned_data["Password"]
             cursor = connection.cursor()
             cursor.execute("UPDATE LoginInfo SET Password = '%s' WHERE UserName = '%s';"%(password, username))
