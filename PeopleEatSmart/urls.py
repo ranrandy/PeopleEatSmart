@@ -19,5 +19,5 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('RandyEatSmart.urls'))
+    path('', include('PeopleEatSmartApp.urls'))
 ]

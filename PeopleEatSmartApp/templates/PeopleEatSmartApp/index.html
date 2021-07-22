@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+  </head>
+  <body>
+    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
+    <br><br>
+    {% if high_rating_recipe_list %}
+        <ul style="text-align: center;">
+        {% for recipe in high_rating_recipe_list %}
+            <li><a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.name }}</a><p></p>
+                <a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}"></a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No such recipe</p>
+    {% endif %}
+  </body>
+</html>
