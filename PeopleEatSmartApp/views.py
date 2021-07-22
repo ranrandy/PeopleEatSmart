@@ -25,7 +25,6 @@ def view_recipe(request):
     return render(request, 'PeopleEatSmartApp/recipes.html', context)
 
 
-
 def show_recipe(request, recipe_id):
     # try:
     #     # recipe = Recipe.objects.raw("SELECT * FROM Recipe WHERE RecipeID = %s", [recipe_id])[0]
@@ -79,14 +78,13 @@ def user_signup(request):
 def search_recipe(request):
     recipeInfo = []
     if request.method == 'POST':
-        form = SearchForm(request.POST)
+        form = SearchRecipeForm(request.POST)
         if form.is_valid():
-            recipe_id= form.cleaned_data["RecipeID"]
-            # if not username == "" and not password == ""
-            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where RecipeID = %s" %(recipe_id))
+            recipe_name = form.cleaned_data["Name"]
+            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 10;".format(recipe_name))
     else:
-        form = SearchForm()
-    context = { 'form': form, 'recipeInfo':recipeInfo}
+        form = SearchRecipeForm()
+    context = {'recipeInfo': recipeInfo}
     return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
 
 

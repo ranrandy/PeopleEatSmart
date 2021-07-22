@@ -11,5 +11,7 @@ class RatingCommentForm(forms.Form):
     RatingValue = forms.IntegerField(label="RatingValue")
     Comment = forms.CharField(label="Comment", max_length=4096)
 
-class SearchForm(forms.Form):
-    RecipeID = forms.IntegerField(label="RecipeID")
+
+class SearchRecipeForm(forms.Form):
+    # RecipeID = forms.IntegerField(label="RecipeID")
+    Name = forms.CharField(label='Name')
