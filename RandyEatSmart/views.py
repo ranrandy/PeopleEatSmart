@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db import connection
 
+# from rest_framework.decorators import api_view
+
 def executeSQL(sql):
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -55,3 +57,15 @@ class RandyView(APIView):
             serializer.save()
             return Response(serializer.data)
     
+
+
+class RobertViewSet (viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    def retrieve(self, request, pk):
+        print("debug: RobertViewSet#retrieve")
+        try:
+            ing = Ingredient.objects.get(ingredientid=pk)
+        except Ingredient.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"id": ing.ingredientid, "name": ing.ingredientname})
