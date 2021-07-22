@@ -48,12 +48,25 @@ def rate_recipe(request):
             comment= form.cleaned_data["Comment"]
 
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES (%s, '%s', '%s', (SELECT RecipeID FROM Recipe WHERE Name = '%s'));"%(ratingvalue, comment, username, recipename))
+            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES (%s, '%s', '%s', (SELECT RecipeID FROM Recipe WHERE Name = '%s'));".format(ratingvalue, comment, username, recipename))
     # if a GET (or any other method) we'll create a blank form
     else:
         form = RatingCommentForm()
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
+
+
+def search_recipe(request):
+    recipeInfo = []
+    if request.method == 'POST':
+        form = SearchRecipeForm(request.POST)
+        if form.is_valid():
+            recipe_name = form.cleaned_data["Name"]
+            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 10;".format(recipe_name))
+    else:
+        form = SearchRecipeForm()
+    context = {'recipeInfo': recipeInfo}
+    return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
 
 
 def user_signup(request):
@@ -75,18 +88,6 @@ def user_signup(request):
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user_signup.html', context)
 
-def search_recipe(request):
-    recipeInfo = []
-    if request.method == 'POST':
-        form = SearchRecipeForm(request.POST)
-        if form.is_valid():
-            recipe_name = form.cleaned_data["Name"]
-            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 10;".format(recipe_name))
-    else:
-        form = SearchRecipeForm()
-    context = {'recipeInfo': recipeInfo}
-    return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
-
 
 def user_reset_pw(request):
     # if this is a POST request we need to process the form data
@@ -102,3 +103,23 @@ def user_reset_pw(request):
     else:
         form = SignUpForm()
     return render(request, 'PeopleEatSmartApp/user_reset_pw.html', {'form': form})
+
+
+def user_delete(request):
+    username = ""
+    password = ""
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            username= form.cleaned_data["UserName"]
+            password= form.cleaned_data["Password"]
+            # if not username == "" and not password == ""
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM LoginInfo WHERE UserName = '{}' AND Password = '{}';".format(username, password))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SignUpForm()
+    context = {'form': form}
+    return render(request, 'PeopleEatSmartApp/user_delete.html', context)
