@@ -23,6 +23,7 @@ WHERE Name LIKE '%spaghetti%';
 -- WHERE Name LIKE '%[keyword]%';
 
 
+########################################## FINISHED ##########################################
 # 3. Update password
 UPDATE LoginInfo
 SET Password = '7654321'
@@ -30,6 +31,7 @@ WHERE UserName = 'Randy';
 -- UPDATE LoginInfo
 -- SET Password = [new password]
 -- WHERE UserName = [username];
+########################################## FINISHED ##########################################
 
 
 # 4. Delete username

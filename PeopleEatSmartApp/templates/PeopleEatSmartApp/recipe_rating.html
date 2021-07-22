@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+  </head>
+  <style>
+    .user {
+        padding-top: 30px;
+    }
+  </style>
+  <body>
+    <p style="text-align: left; padding: 10px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' width="20%"/></p>
+    <!-- {% if recipe %}
+        <div style="text-align: left; padding-left: 30px;">
+            <h3>{{ recipe.name }}</h3>
+        </div>
+    {% else %}
+        <p>No such recipe</p>
+    {% endif %} -->
+    <!-- <form action="" method="post">
+      {% csrf_token %}
+      <div style="text-align: left; padding-left: 30px;">
+          <div class="user">
+              <label for="UserName">UserName: </label>
+              <br>
+              <input id="UserName" type="text" name="UserName" class="input" maxlength="100" required>
+              <br><br>
+              <label for="RecipeName">Recipe Name: </label>
+              <br>
+              <input id="RecipeName" type="text" name="RecipeName" class="input" required>
+              <br><br>
+              <label for="Rating">Rating: </label>
+              <br>
+              <input id="Rating" type="number" name="Rating" class="input" min="0" max="5" required>
+              <br><br>
+              <label for="Comment">Comment: </label>
+              <br>
+              <textarea id="Comment" type="text" name="Comment" placeholder="Very Good!" class="input" rows="10" cols="50" maxlength='4096'></textarea>
+              <br>
+              <input type="submit" value="submit">
+          </div>
+      </div>
+    </form> -->
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="center">
+            <div class="user">
+                <label for="UserName">UserName: </label>
+                <br>
+                <input id="UserName" type="text" name="UserName" class="input" size=30 maxlength='100' required>
+                <br><br>
+                <input type="submit" class="submit" value="Sign Up">
+            </div>
+        </div>
+    </form>
+  </body>
+</html>
