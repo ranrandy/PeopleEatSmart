@@ -2,12 +2,29 @@
 import pes from './title.png';
 import './App.css';
 import React from 'react'; 
-import axios from 'axios';
+import Axios from 'Axios';
 
 
 function App() {
 
-  const []
+  const [id, setID] = useState('');
+  const [RatingValues, setRatingValue] = useState('');
+  const [Comments, setCOMMENT] = useState('');
+  const [Name, setUserName] = useState('');
+  const [RecpID, setRecipeID] = useState('');
+  
+  const submitReview = () => {
+    Axios.post('http://localhost:3002/api/insert', {
+      ID: id,
+      RatingValue: RatingValues,
+      COMMENT: Comments,
+      UserName: Name,
+      RecipeID: RecpID
+    }).then(() => {
+      alert('success insert')
+    })
+  };
+
   return (
     <div className="App">
       <header className="App-header">
