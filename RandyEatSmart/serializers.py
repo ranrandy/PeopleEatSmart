@@ -10,3 +10,15 @@ class RandySerializer(serializers.ModelSerializer):
             'username', 
             'password'
         )
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = (
+            'ingredientid',
+            'ingredientname',
+            'calorie',
+            'protein',
+            'fat',
+            'carbohydrate'
+        )

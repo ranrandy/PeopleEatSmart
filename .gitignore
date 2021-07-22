@@ -1,0 +1,5 @@
+PeopleEatSmart/__pycache__/
+RandyEatSmart/__pycache__/
+RandyEatSmart/migrations/__pycache__/
+*.swp
+.venv/
