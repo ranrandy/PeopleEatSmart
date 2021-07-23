@@ -20,6 +20,11 @@ def executeSQL(sql):
         ]
 
 
+# Homepage of the website
+def view_homepage(request):
+    return render(request, 'PeopleEatSmartApp/index.html')
+
+
 # Show all the recipes, but has a limitation of 100 in 1 page.
 def view_recipe(request):
     high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")

@@ -94,15 +94,6 @@ class Prefers(models.Model):
         db_table = 'Prefers'
 
 
-class RandyeatsmartRandyeatsmart(models.Model):
-    username = models.CharField(max_length=50, blank=True, null=True)
-    password = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'RandyEatSmart_randyeatsmart'
-
-
 class Ratingcomment(models.Model):
     id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
     ratingvalue = models.IntegerField(db_column='RatingValue')  # Field name made lowercase.

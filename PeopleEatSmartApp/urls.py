@@ -16,6 +16,7 @@ router = DefaultRouter()
 
 # app_name = "PeopleEatSmart"
 urlpatterns = [
+    path('', views.view_homepage, name='view_homepage'),
     path('recipe/', views.view_recipe, name='view_recipe'),
     path('recipe/<int:recipe_id>/', views.show_recipe, name='show_recipe'),
     path('recipe/keyword-search/', views.keyword_search_recipe, name='keyword_search_recipe'),
