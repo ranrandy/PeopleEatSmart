@@ -46,22 +46,26 @@ def show_recipe(request, recipe_id):
 
 # Add ratings and comments for recipes.
 def rate_recipe(request):
+    recipename = ""
+    username = "randy"
+    ratingvalue = -1
+    comment = ""
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = RatingCommentForm(request.POST)
         if form.is_valid():
-            username= form.cleaned_data["UserName"]
-            recipename = forms.cleaned_data["RecipeName"]
+            username = form.cleaned_data["UserName"]
+            recipename = form.cleaned_data["RecipeName"]
             ratingvalue= form.cleaned_data["RatingValue"]
             comment= form.cleaned_data["Comment"]
-
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES (%s, '%s', '%s', (SELECT RecipeID FROM Recipe WHERE Name = '%s'));".format(ratingvalue, comment, username, recipename))
+            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", (SELECT RecipeID FROM Recipe WHERE Name = \"{}\"));".format(str(ratingvalue), comment, username, recipename))
+            return HttpResponse("Successful Comment!")
     # if a GET (or any other method) we'll create a blank form
     else:
         form = RatingCommentForm()
-    context = {'form': form}
+    context = {'recipename': recipename, 'username': username, 'ratingvalue': ratingvalue, 'comment': comment}
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
 

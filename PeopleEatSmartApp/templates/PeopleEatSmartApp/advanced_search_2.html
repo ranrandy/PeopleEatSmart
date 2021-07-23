@@ -6,12 +6,18 @@
     <meta name="theme-color" content="#000000" />
   </head>
   <style>
+    .title {
+        height: 20%; 
+        width: 20%; 
+        object-fit: contain;
+    }
+
     .center {
         margin: auto;
-        max-width: 50%;
-        padding-left: 20%;
-        max-width: 60%;
-        padding-right: 20%;
+        /* padding-left: 20%; */
+        max-width: 80%;
+        width: 1000px;
+        /* padding-right: 20%; */
         text-align: center;
         background-color: rgb(255, 255, 255); 
     }
@@ -21,33 +27,52 @@
     }
     
     .input {
-        font-size: 20px;
+        font-size: 16px;
+        max-width: 80%;
+        margin-bottom: 2px;
     }
 
     .submit {
         margin-bottom: 3%;
+        font-size: 16px;
         max-width: 60%;
-        font-size: 20px;
     }
     
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: center;
+        color: black;
+        padding: 10px;
+    }
+
+    tr:nth-child(even) {
+  		background-color: #dddddd;
+	}
+
     body {
         font-family: Monaco, monospace;
-        font-size: 20px;
+        font-size: 16px;
     }
   </style>
   <body>
-    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
-    <br><br>
+    <div style="text-align: center; padding-top: 10%;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart'/></div>
+    <br>
     <form action="" method="post">
       {% csrf_token %}
       <div class="center">
           <div style="text-align: center;">
               <label for="NutrientName">Micronutrient: </label>
-              <input id="NutrientName" type="text" name="NutrientName" class="input" size=50 maxlength='100'>
+              <input id="NutrientName" type="text" name="NutrientName" class="input" size='50' maxlength='100'>
               <input type="submit" class="submit" value="search">
           </div>
       </div>
     </form>
+    <br>
     {% if query_result %}
         <div class="center">
             <table>

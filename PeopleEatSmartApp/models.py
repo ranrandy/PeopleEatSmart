@@ -14,6 +14,9 @@ class Contains(models.Model):
     quantity = models.FloatField(db_column='Quantity', blank=True, null=True)  # Field name made lowercase.
     unit = models.CharField(db_column='Unit', max_length=45, blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.ingredientid) + ' CONTAINS ' + str(self.nutrientid)
+
     class Meta:
         managed = False
         db_table = 'Contains'
@@ -39,6 +42,9 @@ class Diet(models.Model):
     calories = models.FloatField(db_column='Calories', blank=True, null=True)  # Field name made lowercase.
     fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.diettype
+    
     class Meta:
         managed = False
         db_table = 'Diet'
@@ -51,6 +57,9 @@ class Ingredient(models.Model):
     protein = models.FloatField(db_column='Protein', blank=True, null=True)  # Field name made lowercase.
     fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
     carbohydrate = models.FloatField(db_column='Carbohydrate', blank=True, null=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.ingredientname
 
     class Meta:
         managed = False
@@ -71,6 +80,9 @@ class Logininfo(models.Model):
     username = models.CharField(db_column='UserName', primary_key=True, max_length=100)  # Field name made lowercase.
     password = models.CharField(db_column='Password', max_length=100)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.username
+    
     class Meta:
         managed = False
         db_table = 'LoginInfo'
@@ -79,6 +91,9 @@ class Logininfo(models.Model):
 class Micronutrient(models.Model):
     nutrientid = models.IntegerField(db_column='NutrientID', primary_key=True)  # Field name made lowercase.
     nutrientname = models.CharField(db_column='NutrientName', max_length=100)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.nutrientname
 
     class Meta:
         managed = False
@@ -101,6 +116,9 @@ class Ratingcomment(models.Model):
     username = models.CharField(db_column='UserName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     recipeid = models.ForeignKey('Recipe', models.DO_NOTHING, db_column='RecipeID', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.recipeid) + ', ' + str(self.ratingvalue) + ', ' + self.username
+    
     class Meta:
         managed = False
         db_table = 'RatingComment'
