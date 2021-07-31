@@ -19,6 +19,11 @@ def executeSQL(sql):
             for row in cursor.fetchall()
         ]
 
+def cssView(request):
+    return render(request, 'PeopleEatSmartApp/css/mdb.min.css')
+
+def cssView(request):
+    return render(request, 'PeopleEatSmartApp/js/mdb.min.js')
 
 # Homepage of the website
 def view_homepage(request):

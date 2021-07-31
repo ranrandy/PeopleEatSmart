@@ -1,41 +1,37 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+    />
+    <!-- MDB -->
+    <!-- <link rel="stylesheet" href="../mdb5/css/mdb.min.css" /> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'mdb5/css/mdb.min.css' %}"/>
   </head>
-  <style>
-    .center {
-        margin: auto;
-        padding-left: 20%;
-        text-align: left;
-        background-color: rgb(255, 255, 255); 
-    }
-
-    .user {
-        padding-top: 30px;
-    }
-    
-    .input {
-        font-size: 20px;
-    }
-
-    .submit {
-        margin-bottom: 3%;
-        max-width: 60%;
-        font-size: 20px;
-    }
-
-    body {
-        font-family: Monaco, monospace;
-        font-size: 20px;
-        line-height: 2;
-    }
-  </style>
   <body>
-    <p style="text-align: center; padding-top: 100px;"><a href='./'><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></a></p>
+    <p style="text-align: center; padding-top: 100px;"><a href='./'><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' /></a></p>
+    
     <div class="center">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">
+            Some quick example text to build on the card title and make up the bulk of the
+            card's content.
+          </p>
+          <button type="button" class="btn btn-primary">Button</button>
+        </div>
+      </div>
+
       <p>user:</p>
       <ul>
         <li><a href="./user-signup/">User Sign Up</a></li>
@@ -55,5 +51,9 @@
         <li><a href="./advanced-search-2/">Search Ingredient Popularity Based on Micronutrient (more than 5 grams / 100 grams)</a></li>
       </ul>
     </div>
+    <!-- MDB -->
+    <script type="text/javascript" src="{% static 'mdb5/js/mdb.min.js' %}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
   </body>
 </html>

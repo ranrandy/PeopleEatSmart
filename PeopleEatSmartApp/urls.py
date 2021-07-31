@@ -25,6 +25,6 @@ urlpatterns = [
     path('advanced-search-2/', views.advanced_search_2, name='advanced_search_2'), 
     path('user-signup/', views.user_signup, name='user_signup'),
     path('user-reset-pw/', views.user_reset_pw, name='user_reset_pw'),
-    path('user-delete/', views.user_delete, name='user_delete'),
+    path('user-delete/', views.user_delete, name='user_delete')
     # url('^', include('django.contrib.auth.urls'))
 ]
