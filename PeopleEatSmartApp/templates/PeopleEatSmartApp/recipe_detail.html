@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +13,7 @@
     }
   </style>
   <body>
-    <p style="text-align: left; padding: 10px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' width="20%"/></p>
+    <p style="text-align: left; padding: 10px;"><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' width="20%"/></p>
     {% if recipe %}
         <div style="text-align: left; padding-left: 30px;">
             <h3>{{ recipe.name }}</h3>

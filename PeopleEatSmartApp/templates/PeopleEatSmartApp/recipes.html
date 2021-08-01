@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,7 +8,7 @@
     <meta name="theme-color" content="#000000" />
   </head>
   <body>
-    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
+    <p style="text-align: center; padding-top: 100px;"><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' /></p>
     <br><br>
     {% if high_rating_recipe_list %}
         <div style="text-align: center;">

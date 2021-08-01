@@ -18,39 +18,122 @@
     <link rel="stylesheet" type="text/css" href="{% static 'mdb5/css/mdb.min.css' %}"/>
   </head>
   <body>
-    <p style="text-align: center; padding-top: 100px;"><a href='./'><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' /></a></p>
-    
-    <div class="center">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">
-            Some quick example text to build on the card title and make up the bulk of the
-            card's content.
-          </p>
-          <button type="button" class="btn btn-primary">Button</button>
-        </div>
-      </div>
 
-      <p>user:</p>
-      <ul>
-        <li><a href="./user-signup/">User Sign Up</a></li>
-        <li><a href="./user-reset-pw/">User Reset Password</a></li>
-        <li><a href="./user-delete/">User Delete</a></li>
-      </ul>
-      <p>recipe:</p>
-      <ul>
-        <li><a href="./recipe/">View All Recipes</a></li>
-        <li><a href="./recipe/1/">View Details of Recipes (add different number at the end to see different recipes)</a></li>
-        <li><a href="./recipe/rating/">Rate a Recipe</a></li>
-      </ul>
-      <p>search:</p>
-      <ul>
-        <li><a href="./recipe/keyword-search/">Search Recipes Based on Keyword</a></li>
-        <li><a href="./advanced-search/">Search Recipes Based on Micronutrient</a></li>
-        <li><a href="./advanced-search-2/">Search Ingredient Popularity Based on Micronutrient (more than 5 grams / 100 grams)</a></li>
-      </ul>
+    <!-- Background image -->
+    <div class="bg-image p-5 shadow-1-strong rounded text-white" style="
+        background-image: url('/static/assets/background_image.png');
+        height: 100vh;
+      ">
+      <div class="mask" style="background-color: rgba(0, 0, 0, 0.5);">
+        <!-- Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid justify-content-between">
+            <div class="d-flex">
+            </div>
+            <div class="d-flex">
+            </div>
+            <!-- Left elements -->
+            <div class="d-flex">
+              <!-- Logo -->
+              <a class="navbar-brand me-2 mb-1 d-flex align-items-center" href="/">
+                <img
+                  src="{% static 'assets/logo_heavy_green.png' %}"
+                  height="20"
+                  alt=""
+                  loading="lazy"
+                  style="margin-top: 2px;"
+                />
+              </a>
+              <ul class="navbar-nav flex-row">
+                <li class="nav-item me-3 me-lg-1">
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/about">                  
+                    <strong class="d-none d-sm-block ms-1">About</strong>
+                  </a>
+                </li>
+                <li class="nav-item me-3 me-lg-1">
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/recipe-search">                  
+                    <strong class="d-none d-sm-block ms-1">Recipe</strong>
+                  </a>
+                </li>
+                <li class="nav-item me-3 me-lg-1">
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/ingredient-search">                  
+                    <strong class="d-none d-sm-block ms-1">Ingredient</strong>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Left elements -->
+
+            <!-- Right elements -->
+            <ul class="navbar-nav flex-row">
+              <li class="nav-item me-3 me-lg-1">
+                <a class="nav-link d-sm-flex align-items-sm-center" href="#">
+                  <strong class="d-none d-sm-block ms-1">My Recipe</strong>
+                </a>
+              </li>
+              <li class="nav-item me-3 me-lg-1">
+                <a class="nav-link d-sm-flex align-items-sm-center" href="#">
+                  <strong class="d-none d-sm-block ms-1">My Menu</strong>
+                </a>
+              </li>
+              <li class="nav-item dropdown me-3 me-lg-1">
+                <a
+                  class="nav-link dropdown-toggle hidden-arrow"
+                  href="#"
+                  id="navbarDropdownMenuLink"
+                  role="button"
+                  data-mdb-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="{% static 'assets/default_user_avatar.png' %}"
+                    class="rounded-circle"
+                    height="22"
+                    alt=""
+                    loading="lazy"
+                  />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuLink"
+                >
+                  <li>
+                    <a class="dropdown-item" href="user-signup/">Sign up / Log in</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <!-- Right elements -->
+            <div class="d-flex">
+            </div>
+            <div class="d-flex">
+            </div>
+          </div>
+        </nav>
+        <!-- Navbar -->
+
+        <!-- Logo -->
+        <br><br><br><br>
+        <div style="margin-left: 25%;">
+          <img
+          src="{% static 'assets/welcome_to.png' %}"
+          alt=""
+          height="40"
+          /><br><br>
+          <img
+          src="{% static 'assets/logo_heavy_green.png' %}"
+          alt=""
+          height="60"
+          />
+          <br><br><br>
+          <h5><i>-- 4peep4</h5>
+        </div>
+        <!-- Logo-->
+
+      </div>
     </div>
+    <!-- Background image -->     
+
     <!-- MDB -->
     <script type="text/javascript" src="{% static 'mdb5/js/mdb.min.js' %}"></script>
     <!-- Custom scripts -->

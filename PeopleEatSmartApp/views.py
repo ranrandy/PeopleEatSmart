@@ -1,3 +1,4 @@
+from decimal import Context
 from django.utils.translation import templatize
 from .serializers import *
 from .forms import *
@@ -8,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.db import connection
+import logging, sys
 
 
 def executeSQL(sql):
@@ -19,15 +21,14 @@ def executeSQL(sql):
             for row in cursor.fetchall()
         ]
 
-def cssView(request):
-    return render(request, 'PeopleEatSmartApp/css/mdb.min.css')
-
-def cssView(request):
-    return render(request, 'PeopleEatSmartApp/js/mdb.min.js')
 
 # Homepage of the website
-def view_homepage(request):
+def HomePageView(request):
     return render(request, 'PeopleEatSmartApp/index.html')
+
+
+def AboutPageView(request):
+    return render(request, 'PeopleEatSmartApp/about.html')
 
 
 # Show all the recipes, but has a limitation of 100 in 1 page.
@@ -175,3 +176,31 @@ def user_delete(request):
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user_delete.html', context)
 
+
+def match_ingredient_recipe_view(request):
+    query = "SELECT IngredientName FROM Ingredient;"
+    ingredient_names = executeSQL(query)
+    keyword_list = []
+    for i in ingredient_names:
+        if ingredient_names.index(i) < 15:
+            keyword = i['IngredientName'].split(', ')
+            improved_keyword = []
+            for k in keyword:
+                if k not in ('raw', 'uncooked', 'dried'):
+                    improved_keyword.append(k)
+            # keyword_list.append(keyword)
+            where_clauses = ""
+            for k in range(len(improved_keyword)):
+                if k == 0:
+                    where_clause = " IngredientName LIKE \"% {} %\" ".format(improved_keyword[k])
+                else:
+                    where_clause = " OR IngredientName LIKE \"% {} %\" ".format(improved_keyword[k])
+                where_clauses += where_clause
+            sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(where_clauses)
+            query_result = executeSQL(sub_query)
+            # keyword_list.append(sub_query)
+            keyword_list.append(ingredient_names.index(i))
+
+    # context = {'keyword': keyword_list}
+    context = {'query_result': query_result, 'test': keyword_list}
+    return render(request, 'PeopleEatSmartApp/ingredient_recipe_search.html', context)

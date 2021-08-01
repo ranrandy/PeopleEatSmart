@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+  </head>
+  <body>
+    <p style="text-align: center; padding-top: 100px;"><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' /></p>
+    <br><br>
+    {% if query_result %}
+        <div style="text-align: center;">
+          {% for i in query_result %}
+            <p>{{ i }}</p><br>
+          {% endfor %}
+          {% for i in test %}
+            <p>{{ i }}</p><br>
+          {% endfor %}
+        </div>
+    {% else %}
+        <p>No such recipe</p>
+    {% endif %}
+    
+  </body>
+</html>

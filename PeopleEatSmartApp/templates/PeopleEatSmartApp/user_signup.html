@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -44,7 +46,7 @@
     }
   </style>
   <body>
-    <p style="text-align: center; padding-top: 100px;"><img src="https://ranrandy.github.io/title.png" alt='PeopleEatSmart' /></p>
+    <p style="text-align: center; padding-top: 100px;"><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' /></p>
     <form action="" method="post">
         {% csrf_token %}
         <div class="center">
