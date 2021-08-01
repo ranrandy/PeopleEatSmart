@@ -1,0 +1,141 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+    />
+    <!-- MDB -->
+    <!-- <link rel="stylesheet" href="../mdb5/css/mdb.min.css" /> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'mdb5/css/mdb.min.css' %}"/>
+  </head>
+  <body>
+
+    <!-- Background image -->
+    <div class="bg-image p-5 shadow-1-strong rounded text-white" style="
+        background-image: url('/static/assets/background_image.png');
+        height: 100vh;
+      ">
+      <div class="mask" style="background-color: rgba(0, 0, 0, 0.1);">
+        <!-- Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid justify-content-between">
+            <div class="d-flex">
+            </div>
+            <div class="d-flex">
+            </div>
+            <!-- Left elements -->
+            <div class="d-flex">
+              <!-- Logo -->
+              <a class="navbar-brand me-2 mb-1 d-flex align-items-center" href="/">
+                <img
+                  src="{% static 'assets/logo_heavy_green.png' %}"
+                  height="20"
+                  alt=""
+                  loading="lazy"
+                  style="margin-top: 2px;"
+                />
+              </a>
+              <ul class="navbar-nav flex-row">
+                <li class="nav-item me-3 me-lg-1">
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/about">                  
+                    <strong class="d-none d-sm-block ms-1">About</strong>
+                  </a>
+                </li>
+                <li class="nav-item me-3 me-lg-1">
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/recipe-search">                  
+                    <strong class="d-none d-sm-block ms-1">Recipe</strong>
+                  </a>
+                </li>
+                <li class="nav-item me-3 me-lg-1">
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/ingredient-search">                  
+                    <strong class="d-none d-sm-block ms-1">Ingredient</strong>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Left elements -->
+
+            <!-- Right elements -->
+            <ul class="navbar-nav flex-row">
+              <li class="nav-item me-3 me-lg-1">
+                <a class="nav-link d-sm-flex align-items-sm-center" href="#">
+                  <strong class="d-none d-sm-block ms-1">My Recipe</strong>
+                </a>
+              </li>
+              <li class="nav-item me-3 me-lg-1">
+                <a class="nav-link d-sm-flex align-items-sm-center" href="#">
+                  <strong class="d-none d-sm-block ms-1">My Menu</strong>
+                </a>
+              </li>
+              <li class="nav-item dropdown me-3 me-lg-1">
+                <a
+                  class="nav-link dropdown-toggle hidden-arrow"
+                  href="#"
+                  id="navbarDropdownMenuLink"
+                  role="button"
+                  data-mdb-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="{% static 'assets/default_user_avatar.png' %}"
+                    class="rounded-circle"
+                    height="22"
+                    alt=""
+                    loading="lazy"
+                  />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuLink"
+                >
+                  {% if user.is_authenticated %}
+                  <li>
+                    <a class="dropdown-item" href="/user-profile/">Profile</a>
+                  </li>
+                  <li>
+                      <form action="/user-logout/" method="post">
+                          {% csrf_token %}
+                          <input class="dropdown-item" type="submit" value="Log out"></input>
+                      </form>
+                  </li>
+                  {% else %}
+                  <li>
+                    <a class="dropdown-item" href="/user-login/">Log in</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/user-signup/">Sign up</a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </li>
+            </ul>
+            <!-- Right elements -->
+            <div class="d-flex">
+            </div>
+            <div class="d-flex">
+            </div>
+          </div>
+        </nav>
+        <!-- Navbar -->
+        {% block content %}
+
+        {% endblock content %}
+      </div>
+    </div>
+    <!-- Background image -->     
+
+    <!-- MDB -->
+    <script type="text/javascript" src="{% static 'mdb5/js/mdb.min.js' %}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
+  </body>
+</html>

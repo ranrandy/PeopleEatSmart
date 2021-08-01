@@ -4,15 +4,14 @@
 {% block content %}
     <br><br><br><br><br><br><br>
     <div style="margin-left: 40%; margin-right: 40%; font-size: large; text-align: center;">
-        <form action="/user-signup/" method="post">
+        <form action="/user-login/" method="post">
             {% csrf_token %}
             <img class="mb-4" src="{% static 'assets/logo_heavy_green.png' %}" alt="" height="40"><br>
             
             <label>{{ form.username.label }}:</label><br>{{ form.username }}<br><br>
-            <label>{{ form.password1.label }}:</label><br>{{ form.password1 }}<br><br>
-            <label>Confirm Password:</label><br>{{ form.password2 }}<br><br>   
+            <label>{{ form.password.label }}:</label><br>{{ form.password }}<br><br>
 
-            <button class="w-10 btn btn-primary" type="submit">Sign up</button>
+            <button class="w-10 btn btn-primary" type="submit">Log in</button>
         </form>
     </div>
 {% endblock content %}

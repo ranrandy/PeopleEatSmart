@@ -6,10 +6,11 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.db import connection
-import logging, sys
 
 
 def executeSQL(sql):
@@ -26,9 +27,82 @@ def executeSQL(sql):
 def HomePageView(request):
     return render(request, 'PeopleEatSmartApp/index.html')
 
-
+# About page of the website
 def AboutPageView(request):
     return render(request, 'PeopleEatSmartApp/about.html')
+
+# Sign up page of the website
+def user_signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/about')
+    else:
+        form = UserCreationForm()    
+    context = {'form': form}
+    return render(request, 'PeopleEatSmartApp/user_signup.html', context)
+
+# Log in page of the website
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('/about')
+    else:
+        form = AuthenticationForm()
+    context = {'form': form}
+    return render(request, 'PeopleEatSmartApp/user_login.html', context)
+
+# User profile page 
+def user_profile(request):
+    return render(request, 'PeopleEatSmartApp/user_profile.html')
+
+# Log out of the user's current account
+def user_logout(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('/user-logout')
+    return render(request, 'PeopleEatSmartApp/user_logout.html')
+
+# Let user change the password
+def user_reset_pw(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            username= form.cleaned_data["UserName"]
+            password= form.cleaned_data["Password"]
+            cursor = connection.cursor()
+            cursor.execute("UPDATE LoginInfo SET Password = '%s' WHERE UserName = '%s';"%(password, username))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SignUpForm()
+    return render(request, 'PeopleEatSmartApp/user_reset_pw.html', {'form': form})
+
+
+# Let user delete his / her account (username)
+def user_delete(request):
+    username = ""
+    password = ""
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            username= form.cleaned_data["UserName"]
+            password= form.cleaned_data["Password"]
+            # if not username == "" and not password == ""
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM LoginInfo WHERE UserName = '{}' AND Password = '{}';".format(username, password))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SignUpForm()
+    context = {'form': form}
+    return render(request, 'PeopleEatSmartApp/user_delete.html', context)
 
 
 # Show all the recipes, but has a limitation of 100 in 1 page.
@@ -116,65 +190,6 @@ def advanced_search_2(request):
         form = KeywordSearchRecipeForm()
     context = {'query_result': query_result}
     return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
-
-
-# Add a new user to the database
-def user_signup(request):
-    username = ""
-    password = ""
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            username= form.cleaned_data["UserName"]
-            password= form.cleaned_data["Password"]
-            # if not username == "" and not password == ""
-            cursor = connection.cursor()
-            cursor.execute("INSERT INTO LoginInfo VALUES ('%s', '%s');"%(username, password))
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = SignUpForm()
-    context = {'form': form}
-    return render(request, 'PeopleEatSmartApp/user_signup.html', context)
-
-
-# Let user change the password
-def user_reset_pw(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            username= form.cleaned_data["UserName"]
-            password= form.cleaned_data["Password"]
-            cursor = connection.cursor()
-            cursor.execute("UPDATE LoginInfo SET Password = '%s' WHERE UserName = '%s';"%(password, username))
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = SignUpForm()
-    return render(request, 'PeopleEatSmartApp/user_reset_pw.html', {'form': form})
-
-
-# Let user delete his / her account (username)
-def user_delete(request):
-    username = ""
-    password = ""
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            username= form.cleaned_data["UserName"]
-            password= form.cleaned_data["Password"]
-            # if not username == "" and not password == ""
-            cursor = connection.cursor()
-            cursor.execute("DELETE FROM LoginInfo WHERE UserName = '{}' AND Password = '{}';".format(username, password))
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = SignUpForm()
-    context = {'form': form}
-    return render(request, 'PeopleEatSmartApp/user_delete.html', context)
 
 
 def match_ingredient_recipe_view(request):

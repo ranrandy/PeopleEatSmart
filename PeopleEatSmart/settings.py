@@ -82,16 +82,16 @@ WSGI_APPLICATION = 'PeopleEatSmart.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '35.224.26.16',
-        'PORT': '3306',
-        'NAME': 'PeopleEatSmart',
-        'USER': 'root',
-        'PASSWORD': '16JOkJm5xjsp304L',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': '35.224.26.16',
+#         'PORT': '3306',
+#         'NAME': 'PeopleEatSmart',
+#         'USER': 'root',
+#         'PASSWORD': '16JOkJm5xjsp304L',
+#     }
+# }
 
 # [START db_setup]
 if os.getenv('GAE_APPLICATION', None):
