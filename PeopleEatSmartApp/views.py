@@ -11,6 +11,7 @@ from django.contrib.auth import login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.db import connection
+from json import dumps
 
 
 def executeSQL(sql):
@@ -23,6 +24,7 @@ def executeSQL(sql):
         ]
 
 
+# Static Pages
 # Homepage of the website
 def HomePageView(request):
     return render(request, 'PeopleEatSmartApp/index.html')
@@ -31,6 +33,8 @@ def HomePageView(request):
 def AboutPageView(request):
     return render(request, 'PeopleEatSmartApp/about.html')
 
+
+# User Related Pages
 # Sign up page of the website
 def user_signup(request):
     if request.method == 'POST':
@@ -41,7 +45,7 @@ def user_signup(request):
     else:
         form = UserCreationForm()    
     context = {'form': form}
-    return render(request, 'PeopleEatSmartApp/user_signup.html', context)
+    return render(request, 'PeopleEatSmartApp/user/user_signup.html', context)
 
 # Log in page of the website
 def user_login(request):
@@ -54,20 +58,20 @@ def user_login(request):
     else:
         form = AuthenticationForm()
     context = {'form': form}
-    return render(request, 'PeopleEatSmartApp/user_login.html', context)
+    return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
 # User profile page 
 def user_profile(request):
-    return render(request, 'PeopleEatSmartApp/user_profile.html')
+    return render(request, 'PeopleEatSmartApp/user/user_profile.html')
 
 # Log out of the user's current account
 def user_logout(request):
     if request.method == 'POST':
         logout(request)
         return redirect('/user-logout')
-    return render(request, 'PeopleEatSmartApp/user_logout.html')
+    return render(request, 'PeopleEatSmartApp/user/user_logout.html')
 
-# Let user change the password
+# TODO: Let user change the password
 def user_reset_pw(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -81,10 +85,9 @@ def user_reset_pw(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SignUpForm()
-    return render(request, 'PeopleEatSmartApp/user_reset_pw.html', {'form': form})
+    return render(request, 'PeopleEatSmartApp/user/user_reset_pw.html', {'form': form})
 
-
-# Let user delete his / her account (username)
+# TODO: Let user delete his / her account (username)
 def user_delete(request):
     username = ""
     password = ""
@@ -102,15 +105,41 @@ def user_delete(request):
     else:
         form = SignUpForm()
     context = {'form': form}
-    return render(request, 'PeopleEatSmartApp/user_delete.html', context)
+    return render(request, 'PeopleEatSmartApp/user/user_delete.html', context)
 
+
+# Recipe Display Related Pages
+# Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
+def RecipeSearchPageView(request):
+    recipeInfo = []
+    if request.method == 'POST':
+        form = KeywordSearchRecipeForm(request.POST)
+        if form.is_valid():
+            recipe_name = form.cleaned_data["Name"]
+            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 50;".format(recipe_name))
+    else:
+        form = KeywordSearchRecipeForm()
+    context = {'recipeInfo': recipeInfo}
+    return render(request, 'PeopleEatSmartApp/recipe.html', context)
 
 # Show all the recipes, but has a limitation of 100 in 1 page.
 def view_recipe(request):
-    high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
-    context = {'high_rating_recipe_list': high_rating_recipe_list}
-    return render(request, 'PeopleEatSmartApp/recipes.html', context)
-
+    # high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
+    recipes_all = executeSQL("SELECT * FROM Recipe limit 1000")
+    # recipes_all_json = dumps(recipes_all)
+    recipes_1 = []
+    recipes_2 = []
+    recipes_3 = []
+    for i in range(len(recipes_all)):
+        if i % 3 == 1:
+            recipes_1.append(recipes_all[i])
+        elif i % 3 == 2:
+            recipes_2.append(recipes_all[i])
+        else:
+            recipes_3.append(recipes_all[i])
+        i += 1
+    context = {'recipe_1': recipes_1, 'recipe_2': recipes_2, 'recipe_3': recipes_3}
+    return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
 def show_recipe(request, recipe_id):
@@ -122,7 +151,6 @@ def show_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     context = {'recipe': recipe}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
-
 
 # Add ratings and comments for recipes.
 def rate_recipe(request):
@@ -147,21 +175,6 @@ def rate_recipe(request):
         form = RatingCommentForm()
     context = {'recipename': recipename, 'username': username, 'ratingvalue': ratingvalue, 'comment': comment}
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
-
-
-# Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
-def keyword_search_recipe(request):
-    recipeInfo = []
-    if request.method == 'POST':
-        form = KeywordSearchRecipeForm(request.POST)
-        if form.is_valid():
-            recipe_name = form.cleaned_data["Name"]
-            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 50;".format(recipe_name))
-    else:
-        form = KeywordSearchRecipeForm()
-    context = {'recipeInfo': recipeInfo}
-    return render(request, 'PeopleEatSmartApp/recipe_search.html', context)
-
 
 # First advanced query from stage 3.
 def advanced_search(request):

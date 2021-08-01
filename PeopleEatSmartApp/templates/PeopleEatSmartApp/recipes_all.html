@@ -1,0 +1,96 @@
+{% extends "./base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div style="margin-left: 20%; margin-right: 20%;">
+  <div style="background-color: rgba(0, 0, 0, 0.15); padding-left: 2%; padding-right: 2%; color: black;">
+    <br>
+    <img
+      src="{% static 'assets/recipe_dictionary.png' %}"
+      alt=""
+      height="40"
+      />
+    <br><br><br>
+    <div class="row">
+      <div class="col-lg-4 col-md-12 mb-4">
+        {% for recipe in recipe_3 %}
+          <div class="card">
+            <a href="{% url 'show_recipe' recipe.RecipeID %}">
+              <img
+              src="{{ recipe.PictureURL }}"
+              class="card-img-top"
+              alt="..."
+              max-height="30px"
+            />
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">{{ recipe.Name }}</h5>
+              <p class="card-text">
+                {{ recipe.AvgRating }}({{ recipe.RatingCount}})
+              </p>
+            </div>
+          </div>
+          <br>
+        {% endfor %}
+      </div>
+      <div class="col-lg-4 col-md-12 mb-4">
+        {% for recipe in recipe_1 %}
+          <div class="card">
+            <a href="{% url 'show_recipe' recipe.RecipeID %}">
+              <img
+                src="{{ recipe.PictureURL }}"
+                class="card-img-top"
+                alt="..."
+                max-height="30px"
+              />
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">{{ recipe.Name }}</h5>
+              <p class="card-text">
+                {{ recipe.AvgRating }}({{ recipe.RatingCount}})
+              </p>
+            </div>
+          </div>
+          <br>
+        {% endfor %}
+      </div>
+      <div class="col-lg-4 col-md-12 mb-4">
+        {% for recipe in recipe_2 %}
+          <div class="card">
+            <a href="{% url 'show_recipe' recipe.RecipeID %}">
+              <img
+              src="{{ recipe.PictureURL }}"
+              class="card-img-top"
+              alt="..."
+              max-height="30px"
+            />
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">{{ recipe.Name }}</h5>
+              <p class="card-text">
+                {{ recipe.AvgRating }}({{ recipe.RatingCount}})
+              </p>
+            </div>
+          </div>
+          <br>
+        {% endfor %}
+      </div>
+    </div>
+  <h5 id='neatdata'></h5>
+</div>
+
+  
+
+<script>
+  // var recipes_all_json = JSON.parse("{{recipes_all_json|escapejs}}");
+  // // var dataNode = document.getElementById('alldata');
+  // // dataNode.innerHTML+="{{recipes_all_json|escapejs}}";
+  // dataNode = document.getElementById('neatdata');
+  // for(var x in recipes_all_json){
+  //   dataNode.innerHTML += x+' : '+recipes_all_json[x].Name+'<br><br>';
+  // }
+</script>
+
+  
+{% endblock content %}

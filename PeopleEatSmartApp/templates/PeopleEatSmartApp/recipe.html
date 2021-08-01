@@ -1,0 +1,72 @@
+{% extends "./base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <br>
+  <div style="margin-left: 20%; margin-right: 20%;">
+    <div style="background-color: rgba(0, 0, 0, 0.15); ">
+        <br>
+        <div style="padding-left: 2%; padding-right: 2%;">
+          <!-- Recipe Logo -->
+          <img
+          src="{% static 'assets/recipe.png' %}"
+          alt=""
+          height="40"
+          /><br>
+          <!-- Recipe Logo -->
+
+          <!-- Link To View All Recipes -->
+          <a href='/recipes' style="color: aliceblue;">View All</a>
+          <!-- Link To View All Recipes -->
+
+          <hr>
+
+          <!-- Keyword Search Recipe -->
+          <form action="" method="post">
+            {% csrf_token %}
+              <div class="input-group rounded">
+                <label for="Name"></label>
+                <input id="Name" type="text" class="form-control rounded"  name="Name" placeholder="Keyword Search Recipe"/>&nbsp
+                <!-- <input type="submit" class="btn btn-primary rounded" value="Search"> -->
+                <button class="btn btn-primary rounded" type="submit">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+          </form>
+
+          <div id="datatable" data-mdb-max-height="460" data-mdb-fixed-header="true"></div>
+
+
+          <!-- Keyword Search Recipe -->
+
+
+
+          
+        </div>        
+    </div>
+  </div>
+
+  {% if recipeInfo %}
+      <div class="center">
+          <table>
+              <tr>
+                  <th>Recipe Name</th>
+                  <th>Average Rating (#Ratings)</th>
+                  <th>Picture</th>
+              </tr>
+              {% for recipe in recipeInfo %}
+              <tr>
+                  <td><a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.name }}</a></td>
+                  <td>{{ recipe.avgrating}} ({{ recipe.ratingcount}})</td>
+                  <td><a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}" style="width: 40%;"></a><br>                  </td>
+              </tr>
+              {% endfor %}
+          </table>
+      </div>
+  {% endif %}
+
+  <script>
+    
+  </script>
+{% endblock content %}

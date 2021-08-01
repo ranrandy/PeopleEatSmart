@@ -15,9 +15,11 @@ urlpatterns = [
 
     path('user-profile/', views.user_profile, name='user_profile'),
 
-    path('recipe-search/', views.view_recipe, name='view_recipe'),
-    path('recipe/<int:recipe_id>/', views.show_recipe, name='show_recipe'),
-    path('recipe/keyword-search/', views.keyword_search_recipe, name='keyword_search_recipe'),
+    path('recipe/', views.RecipeSearchPageView, name='view_recipe_search_page'),
+    path('recipes/', views.view_recipe, name='view_all_recipes'),
+    
+    path('recipes/<int:recipe_id>/', views.show_recipe, name='show_recipe'),
+    # path('recipe/keyword-search/', views.keyword_search_recipe, name='keyword_search_recipe'),
     path('recipe/rating/', views.rate_recipe, name='rate_recipe'),
     path('advanced-search/', views.advanced_search, name='advanced_search'),
     path('advanced-search-2/', views.advanced_search_2, name='advanced_search_2'),

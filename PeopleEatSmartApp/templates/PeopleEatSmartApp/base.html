@@ -17,6 +17,9 @@
     <!-- <link rel="stylesheet" href="../mdb5/css/mdb.min.css" /> -->
     <link rel="stylesheet" type="text/css" href="{% static 'mdb5/css/mdb.min.css' %}"/>
   </head>
+  <style>
+    html, body { overflow: scroll; scroll-behavior: auto;}
+  </style>
   <body>
 
     <!-- Background image -->
@@ -24,7 +27,7 @@
         background-image: url('/static/assets/background_image.png');
         height: 100vh;
       ">
-      <div class="mask" style="background-color: rgba(0, 0, 0, 0.1);">
+      <div class="mask" style="background-color: rgba(0, 0, 0, 0.1); overflow-y: scroll;">
         <!-- Navbar-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <div class="container-fluid justify-content-between">
@@ -51,7 +54,7 @@
                   </a>
                 </li>
                 <li class="nav-item me-3 me-lg-1">
-                  <a class="nav-link d-sm-flex align-items-sm-center" href="/recipe-search">                  
+                  <a class="nav-link d-sm-flex align-items-sm-center" href="/recipe">                  
                     <strong class="d-none d-sm-block ms-1">Recipe</strong>
                   </a>
                 </li>
@@ -132,7 +135,7 @@
       </div>
     </div>
     <!-- Background image -->     
-
+    
     <!-- MDB -->
     <script type="text/javascript" src="{% static 'mdb5/js/mdb.min.js' %}"></script>
     <!-- Custom scripts -->
