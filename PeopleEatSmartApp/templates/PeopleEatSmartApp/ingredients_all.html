@@ -1,0 +1,50 @@
+{% extends "./base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div style="margin-left: 20%; margin-right: 20%;">
+  <div style="background-color: rgba(0, 0, 0, 0.15); padding-left: 2%; padding-right: 2%; color: black;">
+    <br>
+    <img
+      src="{% static 'assets/ingredient_dictionary.png' %}"
+      alt=""
+      height="40"
+      />
+    <hr>
+    {% if ingredients_all %}
+        <table class="table align-middle">
+        <thead>
+            <tr class="table-light">
+            <th scope="col">IngredientID</th>
+            <th scope="col">Ingredient Name</th>
+            <th scope="col">Calorie</th>
+            <th scope="col">Protein</th>
+            <th scope="col">Fat</th>
+            <th scope="col">Carbohydrate</th>
+            <th scope="col">Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingredient in ingredients_all%}
+            <tr class="table-light">
+            <td>{{ ingredient.IngredientID }}</td>
+            <td>{{ ingredient.IngredientName }}</td>
+            <td>{{ ingredient.Calorie }}</td>
+            <td>{{ ingredient.Protein }}</td>
+            <td>{{ ingredient.Fat }}</td>
+            <td>{{ ingredient.Carbohydrate }}</td>
+            <td>100 g</td>
+            </tr>
+            {% endfor%}
+        </tbody>
+        </table>
+    {% else %}
+        <div>
+        <p style="font-family: fantasy; font-size:xx-large; text-align: center;">No Such Ingredient</p>
+        </div>
+    {% endif %}
+</div>
+
+  
+{% endblock content %}

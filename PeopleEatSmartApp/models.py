@@ -131,8 +131,8 @@ class Recipe(models.Model):
     ratingcount = models.IntegerField(db_column='RatingCount', blank=True, null=True)  # Field name made lowercase.
     pictureurl = models.CharField(db_column='PictureURL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
     
     class Meta:
         managed = False

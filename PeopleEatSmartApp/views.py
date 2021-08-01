@@ -112,19 +112,33 @@ def user_delete(request):
 # Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
 def RecipeSearchPageView(request):
     recipeInfo = []
+    context = {}
     if request.method == 'POST':
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             recipe_name = form.cleaned_data["Name"]
-            recipeInfo = Recipe.objects.raw("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 50;".format(recipe_name))
+            recipeInfo = executeSQL("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 1000;".format(recipe_name))
+            context['keyword_entered'] = recipe_name
     else:
         form = KeywordSearchRecipeForm()
-    context = {'recipeInfo': recipeInfo}
+    recipes_1 = []
+    recipes_2 = []
+    recipes_3 = []
+    for i in range(len(recipeInfo)):
+        if i % 3 == 1:
+            recipes_1.append(recipeInfo[i])
+        elif i % 3 == 2:
+            recipes_2.append(recipeInfo[i])
+        else:
+            recipes_3.append(recipeInfo[i])
+        i += 1
+    context['recipe_1'] = recipes_1
+    context['recipe_2'] = recipes_2
+    context['recipe_3'] = recipes_3
     return render(request, 'PeopleEatSmartApp/recipe.html', context)
 
-# Show all the recipes, but has a limitation of 100 in 1 page.
+# Show all the recipes, TODO: but has a limitation of 100 in 1 page.
 def view_recipe(request):
-    # high_rating_recipe_list = Recipe.objects.raw("SELECT * FROM Recipe limit 100")
     recipes_all = executeSQL("SELECT * FROM Recipe limit 1000")
     # recipes_all_json = dumps(recipes_all)
     recipes_1 = []
@@ -151,6 +165,33 @@ def show_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     context = {'recipe': recipe}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
+
+
+# Ingredient Display Related Pages
+# Search ingredient based on keyword, using SQL technique "LIKE '$[keyword]%'"
+def IngredientSearchPageView(request):
+    ingredientInfo = []
+    context = {}
+    if request.method == 'POST':
+        form = KeywordSearchRecipeForm(request.POST)
+        if form.is_valid():
+            ingredient_name = form.cleaned_data["Name"]
+            ingredientInfo = executeSQL("SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
+            context['keyword_entered'] = ingredient_name
+    else:
+        form = KeywordSearchRecipeForm()
+    
+    context['ingredientInfo'] = ingredientInfo
+    return render(request, 'PeopleEatSmartApp/ingredient.html', context)
+
+# Show all the ingredients
+def view_ingredient(request):
+    ingredients_all = executeSQL("SELECT * FROM Ingredient limit 1000;")
+    context = {'ingredients_all': ingredients_all}
+    return render(request, 'PeopleEatSmartApp/ingredients_all.html', context)
+
+
+
 
 # Add ratings and comments for recipes.
 def rate_recipe(request):
@@ -189,7 +230,6 @@ def advanced_search(request):
     context = {'recipeInfo': recipeInfo}
     return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
 
-
 # Second advanced query from stage 3.
 def advanced_search_2(request):
     query_result = []
@@ -203,7 +243,6 @@ def advanced_search_2(request):
         form = KeywordSearchRecipeForm()
     context = {'query_result': query_result}
     return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
-
 
 def match_ingredient_recipe_view(request):
     query = "SELECT IngredientName FROM Ingredient;"

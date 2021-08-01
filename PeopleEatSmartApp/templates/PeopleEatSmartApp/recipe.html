@@ -20,7 +20,7 @@
           <a href='/recipes' style="color: aliceblue;">View All</a>
           <!-- Link To View All Recipes -->
 
-          <hr>
+          <br><br>
 
           <!-- Keyword Search Recipe -->
           <form action="" method="post">
@@ -34,13 +34,82 @@
                 </button>
               </div>
           </form>
-
-          <div id="datatable" data-mdb-max-height="460" data-mdb-fixed-header="true"></div>
-
-
           <!-- Keyword Search Recipe -->
-
-
+          <hr><br>
+          {% if keyword_entered %}
+            {% if recipe_1 and recipe_2 and recipe_3 %}
+              <p style="font-family: fantasy; font-size:xx-large;">Recipe Result for {{ keyword_entered }}: </p>
+              <div class="row" style="color: black">
+                <div class="col-lg-4 col-md-12 mb-4">
+                  {% for recipe in recipe_3 %}
+                    <div class="card">
+                      <a href="{% url 'show_recipe' recipe.RecipeID %}">
+                        <img
+                        src="{{ recipe.PictureURL }}"
+                        class="card-img-top"
+                        alt="..."
+                        max-height="30px"
+                      />
+                      </a>
+                      <div class="card-body">
+                        <h5 class="card-title">{{ recipe.Name }}</h5>
+                        <p class="card-text">
+                          {{ recipe.AvgRating }}({{ recipe.RatingCount}})
+                        </p>
+                      </div>
+                    </div>
+                    <br>
+                  {% endfor %}
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                  {% for recipe in recipe_1 %}
+                    <div class="card">
+                      <a href="{% url 'show_recipe' recipe.RecipeID %}">
+                        <img
+                          src="{{ recipe.PictureURL }}"
+                          class="card-img-top"
+                          alt="..."
+                          max-height="30px"
+                        />
+                      </a>
+                      <div class="card-body">
+                        <h5 class="card-title">{{ recipe.Name }}</h5>
+                        <p class="card-text">
+                          {{ recipe.AvgRating }}({{ recipe.RatingCount}})
+                        </p>
+                      </div>
+                    </div>
+                    <br>
+                  {% endfor %}
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                  {% for recipe in recipe_2 %}
+                    <div class="card">
+                      <a href="{% url 'show_recipe' recipe.RecipeID %}">
+                        <img
+                        src="{{ recipe.PictureURL }}"
+                        class="card-img-top"
+                        alt="..."
+                        max-height="30px"
+                      />
+                      </a>
+                      <div class="card-body">
+                        <h5 class="card-title">{{ recipe.Name }}</h5>
+                        <p class="card-text">
+                          {{ recipe.AvgRating }}({{ recipe.RatingCount}})
+                        </p>
+                      </div>
+                    </div>
+                    <br>
+                  {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <div>
+                <p style="font-family: fantasy; font-size:xx-large; text-align: center;">No Such Recipe</p>
+              </div>
+            {% endif %}
+          {% endif %}
 
           
         </div>        
@@ -65,8 +134,4 @@
           </table>
       </div>
   {% endif %}
-
-  <script>
-    
-  </script>
 {% endblock content %}
