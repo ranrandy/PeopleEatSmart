@@ -30,6 +30,12 @@ urlpatterns = [
 
 
     path('ingredient/', IngredientSearchPageView, name='view_ingredient_search_page'),
-    path('ingredients/', views.view_ingredient, name='view_all_ngredients')
+    path('ingredients/', views.view_ingredient, name='view_all_ngredients'),
+
+
+
+
+    path('my-recipe/', MyRecipePage, name='my_recipes'),
+    path('my-menu/', MyMenuPage, name='my_menus')
     # url('^', include('django.contrib.auth.urls'))
 ]

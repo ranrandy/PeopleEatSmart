@@ -1,37 +1,61 @@
+{% extends "./base.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-  </head>
-  <style>
-    .user {
-        padding-top: 30px;
-    }
-  </style>
-  <body>
-    <p style="text-align: left; padding: 10px;"><img src="{% static 'assets/title.png' %}" alt='PeopleEatSmart' width="20%"/></p>
-    {% if recipe %}
-        <div style="text-align: left; padding-left: 30px;">
-            <h3>{{ recipe.name }}</h3>
-            <p>Rating: {{ recipe.avgrating}} ({{ recipe.ratingcount}})</p>
-            <a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}"></a><br>
+{% block content %}
+<div style="margin-left: 20%; margin-right: 20%;">
+    <div style="background-color: rgba(0, 0, 0, 0.15);">
+        <div style="margin-left: 2%; margin-right: 2%;">
+            <br>
+            <h2>{{ recipe.Name }}</h2><hr>
+            <p> Rating: {{ recipe.AvgRating }} ({{ recipe.RatingCount }})</p>
+            <a href="{{ recipe.PictureURL }}">
+                <img
+                src="{{ recipe.PictureURL }}"
+                class="img-fluid rounded"
+                />
+            </a><br><br>
+            <ul>
+                <li>
+                    Author: {{ recipe.Author }}
+                </li>
+                <li>
+                    Description: {{ recipe.description }}
+                </li>
+                <br>
+                <li>
+                    Cook Time (Minutes): {{ recipe.cook_time_minutes }}
+                </li>
+                <li>
+                    Preparation Time (Minutes): {{ recipe.prep_time_minutes }}
+                </li>
+                <li>
+                    Total Time (Minutes): {{ recipe.total_time_minutes }}
+                </li>
+                <br>
+                <li>
+                    Ingredients:
+                    <ul>
+                        {% for i in ingredients_list%}
+                            {% if i %}
+                                <li>{{ i }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li>
+                    Instructions: 
+                    <ul>
+                        {% for i in ingredients_list%}
+                            {% if i %}
+                                <li>{{ i }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
         </div>
-    {% else %}
-        <p>No such recipe</p>
-    {% endif %}
-    <form action="" method="post">
-      {% csrf_token %}
-      <div style="text-align: left; padding-left: 30px;">
-          <div class="user">
-              <!-- <label for="UserName">UserName: </label>
-              <br>
-              <input id="UserName" type="text" name="UserName" class="input" maxlength="100" required> -->
-          </div>
-      </div>
-  </form>
-  </body>
-</html>
+  </div>
+</div>
+
+{% endblock content %}

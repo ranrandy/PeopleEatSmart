@@ -1,0 +1,99 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block content %}
+<br>
+<div style="margin-left: 20%; margin-right: 20%;">
+    <div style="background-color: rgba(0, 0, 0, 0.15); ">
+        <div style="padding-left: 5%; padding-top: 5%; padding-right: 5%;">
+            <div class="card text-black mb-3" style="width: 100%;">
+                <div class="card-body">
+                    <form action="" method="post">
+                        <p class="card-text">
+                            {% csrf_token %}
+                            <div>
+                                {% if user.is_authenticated %}
+                                <h5>You Logged in As: {{ user.username }}</h5><hr>
+                                <h5>Create your own recipe:</h5><br>
+                                <label for="RecipeName">Recipe Name: </label>
+                                <input id="RecipeName" type="text" name="RecipeName" class="input">
+                                <br><br>
+                                <label for="Description">Description: </label>
+                                <input id="Description" type="text" name="Description" class="input" size="50">
+                                <br><br>
+                                <label for="PictureURL">PictureURL: </label>
+                                <input id="PictureURL" type="text" name="PictureURL" class="input" size="50">
+                                <br><br>
+                                <label for="CookTimeMinutes">Cook Time (Minutes): </label>
+                                <input id="CookTimeMinutes" type="int" name="CookTimeMinutes" class="input" size="5">
+                                <br><br>
+                                <label for="PrepTimeMinutes">Preparation Time (Minutes): </label>
+                                <input id="PrepTimeMinutes" type="int" name="PrepTimeMinutes" class="input" size="5">
+                                <br><br>
+                                <label for="TotalTimeMinutes">Total Time (Minutes): </label>
+                                <input id="TotalTimeMinutes" type="int" name="TotalTimeMinutes" class="input" size="5">
+                                <br><br>
+                                
+                                <div id="AddIngredients">
+                                    Ingredients: <input type="button" class="" style="font-size: 10px;" value="Add an ingredient" onclick="createNewIngredient();"/>
+                                </div><br>
+                                <div class="form-outline"><ul id="newIngredients"></ul></div>
+                                
+                                <div id="AddInstructions">
+                                    Instructions: <input type="button" class="" style="font-size: 10px;" value="Add an instruction" onclick="createNewInstruction();"/>
+                                </div><br>
+                                <div class="form-outline"><ul id="newInstructions"></ul></div>
+                                
+                                {% endif %}
+                            </div>
+                        </p>
+                        <br>
+                        <button type="submit" class="btn btn-warning btn-rounded">Create</button><br><br>
+                    </form>
+                </div>
+            </div>
+            {% for recipe in my_recipes %}
+                <div class="card text-black" style="width: 90%; height: 300px;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recipe.Name }}</h5>
+                        <p class="card-text">
+                            <ul>
+                                <li>
+                                    {{ recipe.ingredients }}
+                                </li>
+                                <li>
+                                    {{ recipe.instructions }}
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function createNewIngredient() {
+        // First create a DIV element.
+        var txtNewInputBox = document.createElement('div');
+
+        // Then add the content (a new input box) of the element.
+        txtNewInputBox.innerHTML = "<li><input type='text' name='ingredient' id='newInputIngredient' size='50'></li><br>";
+
+        // Finally put it where it is supposed to appear.
+        document.getElementById("newIngredients").appendChild(txtNewInputBox);
+    }
+
+    function createNewInstruction() {
+        // First create a DIV element.
+        var txtNewInputBox = document.createElement('div');
+
+        // Then add the content (a new input box) of the element.
+        txtNewInputBox.innerHTML = "<li><input type='text' name='instruction' id='newInputInstruction' size='50'></li><br>";
+
+        // Finally put it where it is supposed to appear.
+        document.getElementById("newInstructions").appendChild(txtNewInputBox);
+    }
+</script>
+{% endblock content %}

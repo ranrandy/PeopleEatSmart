@@ -24,16 +24,14 @@ class RecipeSerializer(serializers.ModelSerializer):
             'name',
             'avgrating',
             'ratingcount',
-            'pictureurl'
-        )
-
-
-class LoginInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Logininfo
-        fields = (
-            'username',
-            'password'
+            'pictureurl',
+            'author',
+            'cook_time_minutes',
+            'description',
+            'prep_time_minutes',
+            'total_time_minutes',
+            'ingredients',
+            'instructions'
         )
 
 
