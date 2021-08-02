@@ -43,7 +43,7 @@ def user_signup(request):
             form.save()
             return redirect('/about')
     else:
-        form = UserCreationForm()    
+        form = UserCreationForm()
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user/user_signup.html', context)
 
@@ -60,9 +60,30 @@ def user_login(request):
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
-# User profile page 
+# User profile page
 def user_profile(request):
-    return render(request, 'PeopleEatSmartApp/user/user_profile.html')
+    dietInfo = {}
+    calorie = 0
+    context= {}
+    if request.method == 'POST':
+        form = UserDietType(request.POST)
+        if form.is_valid():
+            diet = form.cleaned_data["DietType"]
+            calorie = form.cleaned_data["Calories"]
+            dietInfo = executeSQL("SELECT * FROM Diet where DietType= '{}';".format(diet))
+    else:
+        form = UserDietType()
+
+    dietInfo = dietInfo[0]
+    carb = dietInfo['Carbohydrate'] * calorie /4
+    protein = dietInfo['Protein'] * calorie /4
+    fat = dietInfo['Fat']* calorie /9
+    context['dietInfo'] = dietInfo
+    d = executeSQL("SELECT DietType FROM Diet")
+    context['DietTypes'] = d
+    context['Macros'] = [{'carb':carb, 'fat':fat, 'Protein': protein}]
+    
+    return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
 
 # Log out of the user's current account
 def user_logout(request):
@@ -190,7 +211,7 @@ def IngredientSearchPageView(request):
             context['keyword_entered'] = ingredient_name
     else:
         form = KeywordSearchRecipeForm()
-    
+
     context['ingredientInfo'] = ingredientInfo
     return render(request, 'PeopleEatSmartApp/ingredient.html', context)
 

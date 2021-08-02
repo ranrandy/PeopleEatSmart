@@ -26,3 +26,8 @@ class AdvancedSearchForm(forms.Form):
 
 class MyRecipeForm(forms.Form):
     RecipeName = forms.CharField(label="RecipeName", max_length=100)
+
+
+class UserDietType(forms.Form):
+    DietType = forms.CharField(label="DietType", max_length=100)
+    Calories = forms.IntegerField(label="Calories")

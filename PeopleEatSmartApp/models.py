@@ -16,7 +16,7 @@ class Contains(models.Model):
 
     def __str__(self):
         return str(self.ingredientid) + ' CONTAINS ' + str(self.nutrientid)
-    
+
     class Meta:
         managed = False
         db_table = 'Contains'
@@ -38,13 +38,12 @@ class Desires(models.Model):
 class Diet(models.Model):
     diettype = models.CharField(db_column='DietType', primary_key=True, max_length=100)  # Field name made lowercase.
     carbohydrate = models.FloatField(db_column='Carbohydrate', blank=True, null=True)  # Field name made lowercase.
-    protein = models.FloatField(db_column='Protein', blank=True, null=True)  # Field name made lowercase.
-    calories = models.FloatField(db_column='Calories', blank=True, null=True)  # Field name made lowercase.
+    protein = models.FloatField(db_column='Protein', blank=True, null=True)  # Field name made lowercase.  # Field name made lowercase.
     fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
 
     def __str__(self):
         return self.diettype
-    
+
     class Meta:
         managed = False
         db_table = 'Diet'
@@ -79,7 +78,7 @@ class Logininfo(models.Model):
 
     def __str__(self):
         return self.username
-    
+
     class Meta:
         managed = False
         db_table = 'LoginInfo'
@@ -91,7 +90,7 @@ class Micronutrient(models.Model):
 
     def __str__(self):
         return self.nutrientname
-    
+
     class Meta:
         managed = False
         db_table = 'Micronutrient'
@@ -124,7 +123,7 @@ class Ratingcomment(models.Model):
 
     def __str__(self):
         return str(self.recipeid) + ', ' + str(self.ratingvalue) + ', ' + self.username
-    
+
     class Meta:
         managed = False
         db_table = 'RatingComment'
