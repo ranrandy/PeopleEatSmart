@@ -2,5 +2,21 @@
 {% load static %}
 
 {% block content %}
-    
+<form action="" method="post">
+  {% csrf_token %}
+    <div class="input-group rounded">
+      <label for="DietType"></label>
+      <input id="DietType" type="text" class="form-control rounded"  name="DietType" placeholder="Keyword Search Recipe"/>&nbsp
+      <!-- <input type="submit" class="btn btn-primary rounded" value="Search"> -->
+      <input id="Calories" type="int" class="form-control rounded"  name="Calories" placeholder="Keyword Search Recipe"/>&nbsp
+      <button class="btn btn-primary rounded" type="submit">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+</form>
+<p>Valid DietTypes</p>
+<p>{{ DietTypes }}</p>
+<p>{{ dietInfo}}</p>
+<p>Macro info according to diettype and calories</p>
+<p>{{ Macros}}</p>
 {% endblock content %}
