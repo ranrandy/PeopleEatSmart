@@ -24,7 +24,14 @@ class RecipeSerializer(serializers.ModelSerializer):
             'name',
             'avgrating',
             'ratingcount',
-            'pictureurl'
+            'pictureurl',
+            'author',
+            'cooktimeminutes',
+            'description',
+            'preptimeminutes',
+            'totaltimeminutes',
+            'ingredients',
+            'instructions'
         )
 
 

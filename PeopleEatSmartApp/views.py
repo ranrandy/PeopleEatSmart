@@ -108,6 +108,15 @@ def user_delete(request):
     return render(request, 'PeopleEatSmartApp/user/user_delete.html', context)
 
 
+# My recipe page
+def MyRecipePage(request):
+
+    return render(request, 'PeopleEatSmartApp/my_recipe.html')
+
+# My menu page
+def MyMenuPage(request):
+    return render(request, 'PeopleEatSmartApp/my_menu.html')
+
 # Recipe Display Related Pages
 # Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
 def RecipeSearchPageView(request):
@@ -157,13 +166,14 @@ def view_recipe(request):
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
 def show_recipe(request, recipe_id):
-    # try:
-    #     # recipe = Recipe.objects.raw("SELECT * FROM Recipe WHERE RecipeID = %s", [recipe_id])[0]
-    #     recipe = Recipe.objects.get(pk=recipe_id)
-    # except Recipe.DoesNotExist:
-    #     raise Http404("Recipe does not exist")
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    context = {'recipe': recipe}
+    try:
+        recipe = executeSQL("SELECT * FROM Recipe WHERE RecipeID = {}".format(recipe_id))[0]
+        ingredients_list = recipe['ingredients'].split(' && ')
+        # recipe = Recipe.objects.get(pk=recipe_id)
+    except Recipe.DoesNotExist:
+        raise Http404("Recipe does not exist")
+    # recipe = get_object_or_404(Recipe, pk=recipe_id)
+    context = {'recipe': recipe, 'ingredients_list': ingredients_list}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
 
 

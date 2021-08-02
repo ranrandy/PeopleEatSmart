@@ -16,7 +16,7 @@ class Contains(models.Model):
 
     def __str__(self):
         return str(self.ingredientid) + ' CONTAINS ' + str(self.nutrientid)
-    
+
     class Meta:
         managed = False
         db_table = 'Contains'
@@ -58,6 +58,9 @@ class Ingredient(models.Model):
     fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
     carbohydrate = models.FloatField(db_column='Carbohydrate', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.ingredientname
+
     class Meta:
         managed = False
         db_table = 'Ingredient'
@@ -65,7 +68,7 @@ class Ingredient(models.Model):
 
 class Ingredientof(models.Model):
     ingredientid = models.OneToOneField(Ingredient, models.DO_NOTHING, db_column='IngredientID', primary_key=True)  # Field name made lowercase.
-    recipeid = models.ForeignKey('RecipeAbandoned', models.DO_NOTHING, db_column='RecipeID')  # Field name made lowercase.
+    recipeid = models.ForeignKey('Recipe', models.DO_NOTHING, db_column='RecipeID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -91,7 +94,7 @@ class Micronutrient(models.Model):
 
     def __str__(self):
         return self.nutrientname
-    
+
     class Meta:
         managed = False
         db_table = 'Micronutrient'
@@ -106,21 +109,12 @@ class Prefers(models.Model):
         db_table = 'Prefers'
 
 
-class RandyeatsmartRandyeatsmart(models.Model):
-    username = models.CharField(max_length=50, blank=True, null=True)
-    password = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'RandyEatSmart_randyeatsmart'
-
-
 class Ratingcomment(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
     ratingvalue = models.IntegerField(db_column='RatingValue')  # Field name made lowercase.
     comment = models.CharField(db_column='COMMENT', max_length=4096, blank=True, null=True)  # Field name made lowercase.
     username = models.CharField(db_column='UserName', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    recipeid = models.ForeignKey('RecipeAbandoned', models.DO_NOTHING, db_column='RecipeID', blank=True, null=True)  # Field name made lowercase.
+    recipeid = models.ForeignKey('Recipe', models.DO_NOTHING, db_column='RecipeID', blank=True, null=True)  # Field name made lowercase.
 
     def __str__(self):
         return str(self.recipeid) + ', ' + str(self.ratingvalue) + ', ' + self.username
@@ -131,34 +125,18 @@ class Ratingcomment(models.Model):
 
 
 class Recipe(models.Model):
-    recipeid = models.AutoField(db_column='RecipeID', primary_key=True)  # Field name made lowercase.
-    author = models.TextField(db_column='Author', blank=True, null=True)  # Field name made lowercase.
-    cook_time_minutes = models.IntegerField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    pictureurl = models.TextField(db_column='PictureURL', blank=True, null=True)  # Field name made lowercase.
-    prep_time_minutes = models.IntegerField(blank=True, null=True)
-    avgrating = models.FloatField(db_column='AvgRating', blank=True, null=True)  # Field name made lowercase.
-    ratingcount = models.IntegerField(db_column='RatingCount', blank=True, null=True)  # Field name made lowercase.
-    name = models.TextField(db_column='Name')  # Field name made lowercase.
-    total_time_minutes = models.IntegerField(blank=True, null=True)
-    ingredients = models.TextField()
-    instructions = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Recipe'
-
-
-class RecipeAbandoned(models.Model):
     recipeid = models.IntegerField(db_column='RecipeID', primary_key=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=1000)  # Field name made lowercase.
     avgrating = models.FloatField(db_column='AvgRating', blank=True, null=True)  # Field name made lowercase.
     ratingcount = models.IntegerField(db_column='RatingCount', blank=True, null=True)  # Field name made lowercase.
     pictureurl = models.CharField(db_column='PictureURL', max_length=1000, blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+    
     class Meta:
         managed = False
-        db_table = 'Recipe_abandoned'
+        db_table = 'Recipe'
 
 
 class Requires(models.Model):
@@ -183,30 +161,6 @@ class UserUser(models.Model):
     class Meta:
         managed = False
         db_table = 'User_user'
-
-
-class AccountEmailaddress(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    email = models.CharField(unique=True, max_length=254)
-    verified = models.IntegerField()
-    primary = models.IntegerField()
-    user = models.ForeignKey('AuthUser', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'account_emailaddress'
-
-
-class AccountEmailconfirmation(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    created = models.DateTimeField()
-    sent = models.DateTimeField(blank=True, null=True)
-    key = models.CharField(unique=True, max_length=64)
-    email_address = models.ForeignKey(AccountEmailaddress, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'account_emailconfirmation'
 
 
 class AuthGroup(models.Model):
@@ -323,15 +277,6 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class DjangoSite(models.Model):
-    domain = models.CharField(unique=True, max_length=100)
-    name = models.CharField(max_length=50)
-
-    class Meta:
-        managed = False
-        db_table = 'django_site'
-
-
 class IngredientofSource(models.Model):
     recipename = models.CharField(db_column='RecipeName', primary_key=True, max_length=500)  # Field name made lowercase.
     ingredientname = models.CharField(db_column='IngredientName', max_length=100)  # Field name made lowercase.
@@ -424,6 +369,46 @@ class IngredientSource(models.Model):
     class Meta:
         managed = False
         db_table = 'ingredient_source'
+
+
+class MyappChoice(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField()
+    question = models.ForeignKey('MyappQuestion', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'myapp_choice'
+
+
+class MyappQuestion(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'myapp_question'
+
+
+class RecipeSource(models.Model):
+    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    author = models.TextField(blank=True, null=True)
+    cook_time_minutes = models.IntegerField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    photo_url = models.TextField(blank=True, null=True)
+    prep_time_minutes = models.IntegerField(blank=True, null=True)
+    rating_stars = models.FloatField(blank=True, null=True)
+    review_count = models.IntegerField()
+    title = models.TextField()
+    total_time_minutes = models.IntegerField(blank=True, null=True)
+    ingredients = models.TextField()
+    instructions = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'recipe_source'
 
 
 class TableRowsCount(models.Model):
