@@ -12,7 +12,6 @@
                         <p class="card-text">
                             {% csrf_token %}
                             <div>
-                                {% if user.is_authenticated %}
                                 <h5>You Logged in As: {{ user.username }}</h5><hr>
                                 <h5>Create your own recipe:</h5><br>
                                 <label for="RecipeName">Recipe Name: </label>
@@ -37,14 +36,12 @@
                                 <div id="AddIngredients">
                                     Ingredients: <input type="button" class="" style="font-size: 10px;" value="Add an ingredient" onclick="createNewIngredient();"/>
                                 </div><br>
-                                <div class="form-outline"><ul id="newIngredients"></ul></div>
+                                <ul id="newIngredients"></ul>
                                 
                                 <div id="AddInstructions">
                                     Instructions: <input type="button" class="" style="font-size: 10px;" value="Add an instruction" onclick="createNewInstruction();"/>
                                 </div><br>
-                                <div class="form-outline"><ul id="newInstructions"></ul></div>
-                                
-                                {% endif %}
+                                <ul id="newInstructions"></ul>
                             </div>
                         </p>
                         <br>
