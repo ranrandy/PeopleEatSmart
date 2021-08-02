@@ -93,13 +93,13 @@ class Micronutrient(models.Model):
         db_table = 'Micronutrient'
 
 
+
 class Prefers(models.Model):
     username = models.ForeignKey('AuthUser', models.DO_NOTHING, db_column='UserName')  # Field name made lowercase.
     diettype = models.ForeignKey(Diet, models.DO_NOTHING, db_column='DietType')  # Field name made lowercase.
     carbohydrate = models.FloatField(db_column='Carbohydrate', blank=True, null=True)  # Field name made lowercase.
     protein = models.FloatField(db_column='Protein', blank=True, null=True)  # Field name made lowercase.
     fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
-    id = models.IntegerField(primary_key=True)
 
     class Meta:
         managed = False
