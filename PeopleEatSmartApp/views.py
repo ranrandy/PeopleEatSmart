@@ -30,6 +30,8 @@ def HomePageView(request):
     return render(request, 'PeopleEatSmartApp/index.html')
 
 # About page of the website
+
+
 def AboutPageView(request):
     return render(request, 'PeopleEatSmartApp/about.html')
 
@@ -43,11 +45,13 @@ def user_signup(request):
             form.save()
             return redirect('/about')
     else:
-        form = UserCreationForm()    
+        form = UserCreationForm()
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user/user_signup.html', context)
 
 # Log in page of the website
+
+
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -60,9 +64,12 @@ def user_login(request):
     context = {'form': form}
     return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
-# User profile page 
+# User profile page
+
+
 def user_profile(request):
     return render(request, 'PeopleEatSmartApp/user/user_profile.html')
+
 
 # Log out of the user's current account
 def user_logout(request):
@@ -72,22 +79,27 @@ def user_logout(request):
     return render(request, 'PeopleEatSmartApp/user/user_logout.html')
 
 # TODO: Let user change the password
+
+
 def user_reset_pw(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = SignUpForm(request.POST)
         if form.is_valid():
-            username= form.cleaned_data["UserName"]
-            password= form.cleaned_data["Password"]
+            username = form.cleaned_data["UserName"]
+            password = form.cleaned_data["Password"]
             cursor = connection.cursor()
-            cursor.execute("UPDATE LoginInfo SET Password = '%s' WHERE UserName = '%s';"%(password, username))
+            cursor.execute("UPDATE LoginInfo SET Password = '%s' WHERE UserName = '%s';" % (
+                password, username))
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SignUpForm()
     return render(request, 'PeopleEatSmartApp/user/user_reset_pw.html', {'form': form})
 
 # TODO: Let user delete his / her account (username)
+
+
 def user_delete(request):
     username = ""
     password = ""
@@ -96,11 +108,12 @@ def user_delete(request):
         # create a form instance and populate it with data from the request:
         form = SignUpForm(request.POST)
         if form.is_valid():
-            username= form.cleaned_data["UserName"]
-            password= form.cleaned_data["Password"]
+            username = form.cleaned_data["UserName"]
+            password = form.cleaned_data["Password"]
             # if not username == "" and not password == ""
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM LoginInfo WHERE UserName = '{}' AND Password = '{}';".format(username, password))
+            cursor.execute("DELETE FROM LoginInfo WHERE UserName = '{}' AND Password = '{}';".format(
+                username, password))
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SignUpForm()
@@ -117,7 +130,8 @@ def RecipeSearchPageView(request):
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             recipe_name = form.cleaned_data["Name"]
-            recipeInfo = executeSQL("SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 1000;".format(recipe_name))
+            recipeInfo = executeSQL(
+                "SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 1000;".format(recipe_name))
             context['keyword_entered'] = recipe_name
     else:
         form = KeywordSearchRecipeForm()
@@ -138,6 +152,8 @@ def RecipeSearchPageView(request):
     return render(request, 'PeopleEatSmartApp/recipe.html', context)
 
 # Show all the recipes, TODO: but has a limitation of 100 in 1 page.
+
+
 def view_recipe(request):
     recipes_all = executeSQL("SELECT * FROM Recipe limit 1000")
     # recipes_all_json = dumps(recipes_all)
@@ -152,10 +168,13 @@ def view_recipe(request):
         else:
             recipes_3.append(recipes_all[i])
         i += 1
-    context = {'recipe_1': recipes_1, 'recipe_2': recipes_2, 'recipe_3': recipes_3}
+    context = {'recipe_1': recipes_1,
+               'recipe_2': recipes_2, 'recipe_3': recipes_3}
     return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
+
+
 def show_recipe(request, recipe_id):
     # try:
     #     # recipe = Recipe.objects.raw("SELECT * FROM Recipe WHERE RecipeID = %s", [recipe_id])[0]
@@ -176,21 +195,22 @@ def IngredientSearchPageView(request):
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             ingredient_name = form.cleaned_data["Name"]
-            ingredientInfo = executeSQL("SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
+            ingredientInfo = executeSQL(
+                "SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
             context['keyword_entered'] = ingredient_name
     else:
         form = KeywordSearchRecipeForm()
-    
+
     context['ingredientInfo'] = ingredientInfo
     return render(request, 'PeopleEatSmartApp/ingredient.html', context)
 
 # Show all the ingredients
+
+
 def view_ingredient(request):
     ingredients_all = executeSQL("SELECT * FROM Ingredient limit 1000;")
     context = {'ingredients_all': ingredients_all}
     return render(request, 'PeopleEatSmartApp/ingredients_all.html', context)
-
-
 
 
 # Add ratings and comments for recipes.
@@ -206,18 +226,22 @@ def rate_recipe(request):
         if form.is_valid():
             username = form.cleaned_data["UserName"]
             recipename = form.cleaned_data["RecipeName"]
-            ratingvalue= form.cleaned_data["RatingValue"]
-            comment= form.cleaned_data["Comment"]
+            ratingvalue = form.cleaned_data["RatingValue"]
+            comment = form.cleaned_data["Comment"]
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", (SELECT RecipeID FROM Recipe WHERE Name = \"{}\"));".format(str(ratingvalue), comment, username, recipename))
+            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", (SELECT RecipeID FROM Recipe WHERE Name = \"{}\"));".format(
+                str(ratingvalue), comment, username, recipename))
             return HttpResponse("Successful Comment!")
     # if a GET (or any other method) we'll create a blank form
     else:
         form = RatingCommentForm()
-    context = {'recipename': recipename, 'username': username, 'ratingvalue': ratingvalue, 'comment': comment}
+    context = {'recipename': recipename, 'username': username,
+               'ratingvalue': ratingvalue, 'comment': comment}
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
 # First advanced query from stage 3.
+
+
 def advanced_search(request):
     recipeInfo = []
     if request.method == 'POST':
@@ -231,18 +255,22 @@ def advanced_search(request):
     return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
 
 # Second advanced query from stage 3.
+
+
 def advanced_search_2(request):
     query_result = []
     if request.method == 'POST':
         form = AdvancedSearchForm(request.POST)
         if form.is_valid():
             nutrient_name = form.cleaned_data["NutrientName"]
-            query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(nutrient_name, nutrient_name)
+            query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(
+                nutrient_name, nutrient_name)
             query_result = executeSQL(query)
     else:
         form = KeywordSearchRecipeForm()
     context = {'query_result': query_result}
     return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
+
 
 def match_ingredient_recipe_view(request):
     query = "SELECT IngredientName FROM Ingredient;"
@@ -259,11 +287,14 @@ def match_ingredient_recipe_view(request):
             where_clauses = ""
             for k in range(len(improved_keyword)):
                 if k == 0:
-                    where_clause = " IngredientName LIKE \"% {} %\" ".format(improved_keyword[k])
+                    where_clause = " IngredientName LIKE \"% {} %\" ".format(
+                        improved_keyword[k])
                 else:
-                    where_clause = " OR IngredientName LIKE \"% {} %\" ".format(improved_keyword[k])
+                    where_clause = " OR IngredientName LIKE \"% {} %\" ".format(
+                        improved_keyword[k])
                 where_clauses += where_clause
-            sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(where_clauses)
+            sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(
+                where_clauses)
             query_result = executeSQL(sub_query)
             # keyword_list.append(sub_query)
             keyword_list.append(ingredient_names.index(i))
