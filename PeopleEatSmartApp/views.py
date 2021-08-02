@@ -49,15 +49,25 @@ def user_signup(request):
 
 # Log in page of the website
 def user_login(request):
+    context = {}
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            # valid_user = executeSQL("SELECT count(*) FROM auth_user WHERE username = '{}';".format(user.username))
+            # if not valid_user:
+            #     context['valid_user'] = False
+            # else:
+            # correct_password = executeSQL("SELECT * FROM auth_user WHERE username = '{}';".format(user.username))
+            # if user.password == correct_password:
             login(request, user)
+            context['wrong_password'] = True
             return redirect('/about')
+            # else:
+            #     context['wrong_password'] = True
     else:
         form = AuthenticationForm()
-    context = {'form': form}
+    context['form'] = form
     return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
 # User profile page
@@ -131,8 +141,17 @@ def user_delete(request):
 
 # My recipe page
 def MyRecipePage(request):
-
-    return render(request, 'PeopleEatSmartApp/my_recipe.html')
+    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe;")
+    user = request.user
+    if request.method == 'POST':
+        form = KeywordSearchRecipeForm(request.POST)
+        if form.is_valid():
+            ingredient_name = form.cleaned_data["Name"]
+            ingredientInfo = executeSQL("SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
+    else:
+        form = KeywordSearchRecipeForm()
+    context = {"my_recipes": my_recipes, 'user': user}
+    return render(request, 'PeopleEatSmartApp/my_recipe.html', context)
 
 # My menu page
 def MyMenuPage(request):
@@ -190,11 +209,12 @@ def show_recipe(request, recipe_id):
     try:
         recipe = executeSQL("SELECT * FROM Recipe WHERE RecipeID = {}".format(recipe_id))[0]
         ingredients_list = recipe['ingredients'].split(' && ')
+        instructions_list = recipe['instructions'].split(' && ')
         # recipe = Recipe.objects.get(pk=recipe_id)
     except Recipe.DoesNotExist:
         raise Http404("Recipe does not exist")
     # recipe = get_object_or_404(Recipe, pk=recipe_id)
-    context = {'recipe': recipe, 'ingredients_list': ingredients_list}
+    context = {'recipe': recipe, 'ingredients_list': ingredients_list, 'instructions_list': instructions_list}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
 
 
