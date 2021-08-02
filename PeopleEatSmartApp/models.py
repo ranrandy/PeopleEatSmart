@@ -14,12 +14,6 @@ class Contains(models.Model):
     quantity = models.FloatField(db_column='Quantity', blank=True, null=True)  # Field name made lowercase.
     unit = models.CharField(db_column='Unit', max_length=45, blank=True, null=True)  # Field name made lowercase.
 
-<<<<<<< HEAD
-    def __str__(self):
-        return str(self.ingredientid) + ' CONTAINS ' + str(self.nutrientid)
-
-=======
->>>>>>> 7906c07ac2a50f4bc3d5bed19338757bd910d14f
     class Meta:
         managed = False
         db_table = 'Contains'
@@ -40,12 +34,6 @@ class Desires(models.Model):
 class Diet(models.Model):
     diettype = models.CharField(db_column='DietType', primary_key=True, max_length=100)  # Field name made lowercase.
     carbohydrate = models.FloatField(db_column='Carbohydrate', blank=True, null=True)  # Field name made lowercase.
-<<<<<<< HEAD
-    protein = models.FloatField(db_column='Protein', blank=True, null=True)  # Field name made lowercase.
-    fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
-
-=======
->>>>>>> 7906c07ac2a50f4bc3d5bed19338757bd910d14f
     protein = models.FloatField(db_column='Protein', blank=True, null=True)  # Field name made lowercase.  # Field name made lowercase.
     fat = models.FloatField(db_column='Fat', blank=True, null=True)  # Field name made lowercase.
 
