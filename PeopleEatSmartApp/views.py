@@ -139,18 +139,23 @@ def MyRecipePage(request):
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             ingredient_name = form.cleaned_data["Name"]
-            ingredientInfo = executeSQL("SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
+            ingredientInfo = executeSQL(
+                "SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
     else:
         form = KeywordSearchRecipeForm()
     context = {"my_recipes": my_recipes, 'user': user}
     return render(request, 'PeopleEatSmartApp/my_recipe.html', context)
 
 # My menu page
+
+
 def MyMenuPage(request):
     return render(request, 'PeopleEatSmartApp/my_menu.html')
 
 # Recipe Display Related Pages
 # Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
+
+
 def RecipeSearchPageView(request):
     recipeInfo = []
     context = {}
@@ -205,14 +210,16 @@ def view_recipe(request):
 
 def show_recipe(request, recipe_id):
     try:
-        recipe = executeSQL("SELECT * FROM Recipe WHERE RecipeID = {}".format(recipe_id))[0]
+        recipe = executeSQL(
+            "SELECT * FROM Recipe WHERE RecipeID = {}".format(recipe_id))[0]
         ingredients_list = recipe['ingredients'].split(' && ')
         instructions_list = recipe['instructions'].split(' && ')
         # recipe = Recipe.objects.get(pk=recipe_id)
     except Recipe.DoesNotExist:
         raise Http404("Recipe does not exist")
     # recipe = get_object_or_404(Recipe, pk=recipe_id)
-    context = {'recipe': recipe, 'ingredients_list': ingredients_list, 'instructions_list': instructions_list}
+    context = {'recipe': recipe, 'ingredients_list': ingredients_list,
+               'instructions_list': instructions_list}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
 
 
