@@ -24,13 +24,13 @@
                 </li>
                 <br>
                 <li>
-                    Cook Time (Minutes): {{ recipe.cooktimeminutes }}
+                    Cook Time (Minutes): {{ recipe.cook_time_minutes }}
                 </li>
                 <li>
-                    Preparation Time (Minutes): {{ recipe.preptimeminutes }}
+                    Preparation Time (Minutes): {{ recipe.prep_time_minutes }}
                 </li>
                 <li>
-                    Total Time (Minutes): {{ recipe.totaltimeminutes }}
+                    Total Time (Minutes): {{ recipe.total_time_minutes }}
                 </li>
                 <br>
                 <li>
@@ -44,7 +44,14 @@
                     </ul>
                 </li>
                 <li>
-                    Instructions: {{ recipe.instructions }}
+                    Instructions: 
+                    <ul>
+                        {% for i in ingredients_list%}
+                            {% if i %}
+                                <li>{{ i }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                 </li>
             </ul>
         </div>

@@ -10,7 +10,13 @@
             
             <label>{{ form.username.label }}:</label><br>{{ form.username }}<br><br>
             <label>{{ form.password.label }}:</label><br>{{ form.password }}<br><br>
-
+            <!-- {% if wrong_password %}
+                <p style="color: red;"> Your password is incorrect </p>
+                <p> this is not working </p>
+            {% endif %} -->
+            <!-- {% if not valid_user %}
+                    <p style="color: red;"> Your username doesn't exist </p>
+            {% endif %} -->
             <button class="w-10 btn btn-primary" type="submit">Log in</button>
         </form>
     </div>
