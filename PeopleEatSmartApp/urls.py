@@ -20,7 +20,7 @@ urlpatterns = [
     path('recipes/<int:recipe_id>/', views.show_recipe, name='show_recipe'),
 
     path('recipe/rating/', views.rate_recipe, name='rate_recipe'),
-    
+
     # path('advanced-search/', views.advanced_search, name='advanced_search'),
     # path('advanced-search-2/', views.advanced_search_2, name='advanced_search_2'),
     # path('ingredient-recipe-search/', views.match_ingredient_recipe_view, name='ingredient_recipe_search'),
@@ -28,6 +28,6 @@ urlpatterns = [
     path('ingredients/', views.view_ingredient, name='view_all_ngredients'),
 
     path('my-recipe/', MyRecipePage, name='my_recipes'),
-    # path('my-menu/', MyMenuPage, name='my_menus')
+    path('my-menu/', MyMenuPage, name='my_menus')
     # url('^', include('django.contrib.auth.urls'))
 ]
