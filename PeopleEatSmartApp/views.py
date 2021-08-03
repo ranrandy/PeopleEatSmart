@@ -77,12 +77,24 @@ def user_login(request):
 # User profile page
 
 
+def user_ratings(request):
+    ratingInfo = []
+    context = {}
+    user = request.user
+    if request.method == 'POST':
+        ratingInfo = executeSQL(
+            "Select RecipeID, RatingValue, COMMENT Where UserName Like '%%{}%%';".format(user))
+    context = {'ratingInfo': ratingInfo}
+    return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
+
+
 def user_profile(request):
+    user = request.user
     dietInfo = []
     calorie = 0
-    context= {}
+    context = {}
     carb = 0
-    protein =0
+    protein = 0
     fat = 0
     if request.method == 'POST':
         form = UserDietType(request.POST)
@@ -90,26 +102,29 @@ def user_profile(request):
             diet = form.cleaned_data["DietType"]
             calorie = form.cleaned_data["Calories"]
             user = form.cleaned_data["UserName"]
-            dietInfo = executeSQL("SELECT * FROM Diet where DietType= '{}';".format(diet))
+            dietInfo = executeSQL(
+                "SELECT * FROM Diet where DietType= '{}';".format(diet))
             if len(dietInfo):
                 dietInfo = dietInfo[0]
-                carb = dietInfo['Carbohydrate'] * calorie /4
-                protein = dietInfo['Protein'] * calorie /4
-                fat = dietInfo['Fat']* calorie /9
+                carb = dietInfo['Carbohydrate'] * calorie / 4
+                protein = dietInfo['Protein'] * calorie / 4
+                fat = dietInfo['Fat'] * calorie / 9
                 diet = dietInfo['DietType']
                 cursor = connection.cursor()
-                temp = executeSQL("Select * from Prefers where UserName = '{}' and DietType = '{}';" .format(user, diet))
+                temp = executeSQL(
+                    "Select * from Prefers where UserName = '{}' and DietType = '{}';" .format(user, diet))
                 if len(temp):
-                     cursor.execute("UPDATE Prefers SET Carbohydrate = {}, Protein = {}, Fat = {} WHERE UserName = '{}' and DietType = '{}';" .format(carb, protein, fat,user, diet ))
+                    cursor.execute("UPDATE Prefers SET Carbohydrate = {}, Protein = {}, Fat = {} WHERE UserName = '{}' and DietType = '{}';" .format(
+                        carb, protein, fat, user, diet))
                 else:
-                    cursor.execute("INSERT INTO Prefers (UserName, DietType, Carbohydrate, Protein, Fat) VALUES(\"{}\", \"{}\",{},{},{});" .format(user, diet, carb, protein, fat))
+                    cursor.execute("INSERT INTO Prefers (UserName, DietType, Carbohydrate, Protein, Fat) VALUES(\"{}\", \"{}\",{},{},{});" .format(
+                        user, diet, carb, protein, fat))
     else:
         form = UserDietType()
-
+    context = {'user': user}
 
     context['DietTypes'] = executeSQL("SELECT DietType FROM Diet")
-    context['Macros'] = {'carb':carb, 'fat':fat, 'Protein': protein}
-
+    context['Macros'] = {'carb': carb, 'fat': fat, 'Protein': protein}
 
     return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
 
