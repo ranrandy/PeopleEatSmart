@@ -388,61 +388,61 @@ def rate_recipe(request):
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
 # First advanced query from stage 3.
-def advanced_search(request):
-    recipeInfo = []
-    if request.method == 'POST':
-        form = AdvancedSearchForm(request.POST)
-        if form.is_valid():
-            nutrient_name = form.cleaned_data["NutrientName"]
-            recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating, RecipeID FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE (m.NutrientName = '{}' OR m.NutrientName LIKE '%%{}%%') AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe) LIMIT 50;".format(nutrient_name, nutrient_name))
-    else:
-        form = KeywordSearchRecipeForm()
-    context = {'recipeInfo': recipeInfo}
-    return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
+# def advanced_search(request):
+    # recipeInfo = []
+    # if request.method == 'POST':
+    #     form = AdvancedSearchForm(request.POST)
+    #     if form.is_valid():
+    #         nutrient_name = form.cleaned_data["NutrientName"]
+    #         recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating, RecipeID FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE (m.NutrientName = '{}' OR m.NutrientName LIKE '%%{}%%') AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe) LIMIT 50;".format(nutrient_name, nutrient_name))
+    # else:
+    #     form = KeywordSearchRecipeForm()
+    # context = {'recipeInfo': recipeInfo}
+    # return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
 
 # Second advanced query from stage 3.
-def advanced_search_2(request):
-    query_result = []
-    if request.method == 'POST':
-        form = AdvancedSearchForm(request.POST)
-        if form.is_valid():
-            nutrient_name = form.cleaned_data["NutrientName"]
-            query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(
-                nutrient_name, nutrient_name)
-            query_result = executeSQL(query)
-    else:
-        form = KeywordSearchRecipeForm()
-    context = {'query_result': query_result}
-    return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
+# def advanced_search_2(request):
+    # query_result = []
+    # if request.method == 'POST':
+    #     form = AdvancedSearchForm(request.POST)
+    #     if form.is_valid():
+    #         nutrient_name = form.cleaned_data["NutrientName"]
+    #         query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(
+    #             nutrient_name, nutrient_name)
+    #         query_result = executeSQL(query)
+    # else:
+    #     form = KeywordSearchRecipeForm()
+    # context = {'query_result': query_result}
+    # return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
 
 
-def match_ingredient_recipe_view(request):
-    query = "SELECT IngredientName FROM Ingredient;"
-    ingredient_names = executeSQL(query)
-    keyword_list = []
-    for i in ingredient_names:
-        if ingredient_names.index(i) < 15:
-            keyword = i['IngredientName'].split(', ')
-            improved_keyword = []
-            for k in keyword:
-                if k not in ('raw', 'uncooked', 'dried'):
-                    improved_keyword.append(k)
-            # keyword_list.append(keyword)
-            where_clauses = ""
-            for k in range(len(improved_keyword)):
-                if k == 0:
-                    where_clause = " IngredientName LIKE \"% {} %\" ".format(
-                        improved_keyword[k])
-                else:
-                    where_clause = " OR IngredientName LIKE \"% {} %\" ".format(
-                        improved_keyword[k])
-                where_clauses += where_clause
-            sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(
-                where_clauses)
-            query_result = executeSQL(sub_query)
-            # keyword_list.append(sub_query)
-            keyword_list.append(ingredient_names.index(i))
+# def match_ingredient_recipe_view(request):
+    # query = "SELECT IngredientName FROM Ingredient;"
+    # ingredient_names = executeSQL(query)
+    # keyword_list = []
+    # for i in ingredient_names:
+    #     if ingredient_names.index(i) < 15:
+    #         keyword = i['IngredientName'].split(', ')
+    #         improved_keyword = []
+    #         for k in keyword:
+    #             if k not in ('raw', 'uncooked', 'dried'):
+    #                 improved_keyword.append(k)
+    #         # keyword_list.append(keyword)
+    #         where_clauses = ""
+    #         for k in range(len(improved_keyword)):
+    #             if k == 0:
+    #                 where_clause = " IngredientName LIKE \"% {} %\" ".format(
+    #                     improved_keyword[k])
+    #             else:
+    #                 where_clause = " OR IngredientName LIKE \"% {} %\" ".format(
+    #                     improved_keyword[k])
+    #             where_clauses += where_clause
+    #         sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(
+    #             where_clauses)
+    #         query_result = executeSQL(sub_query)
+    #         # keyword_list.append(sub_query)
+    #         keyword_list.append(ingredient_names.index(i))
 
-    # context = {'keyword': keyword_list}
-    context = {'query_result': query_result, 'test': keyword_list}
-    return render(request, 'PeopleEatSmartApp/ingredient_recipe_search.html', context)
+    # # context = {'keyword': keyword_list}
+    # context = {'query_result': query_result, 'test': keyword_list}
+    # return render(request, 'PeopleEatSmartApp/ingredient_recipe_search.html', context)
