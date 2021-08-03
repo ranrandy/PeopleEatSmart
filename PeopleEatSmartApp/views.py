@@ -15,6 +15,7 @@ from json import dumps
 import re
 
 
+''' Execute SQL Query and Return a Dictionary '''
 def executeSQL(sql):
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -25,7 +26,7 @@ def executeSQL(sql):
         ]
 
 
-# Static Pages
+'''Static Pages'''
 # Homepage of the website
 def HomePageView(request):
     return render(request, 'PeopleEatSmartApp/index.html')
@@ -35,7 +36,7 @@ def AboutPageView(request):
     return render(request, 'PeopleEatSmartApp/about.html')
 
 
-# User Related Pages
+'''User Related Pages'''
 # Sign up page of the website
 def user_signup(request):
     if request.method == 'POST':
@@ -71,7 +72,6 @@ def user_login(request):
     context['form'] = form
     return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
-# Used to let user rate a recipe, but will be integrated to recipe_detail page soon
 def user_ratings(request):
     ratingInfo = []
     context = {}
@@ -169,6 +169,7 @@ def user_delete(request):
     return render(request, 'PeopleEatSmartApp/user/user_delete.html', context)
 
 
+''' CRUD-Operation-Related Page '''
 # My recipe page
 def MyRecipePage(request):
     user = request.user
@@ -231,7 +232,8 @@ def MyMenuPage(request):
         form = KeywordSearchRecipeForm()
     return render(request, 'PeopleEatSmartApp/my_menu.html', context)
 
-# Recipe Display Related Pages
+
+'''Recipe Display Related Pages'''
 # Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
 def RecipeSearchPageView(request):
     recipeInfo = []
@@ -336,7 +338,7 @@ def show_recipe(request, recipe_id):
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
 
 
-# Ingredient Display Related Pages
+''' Ingredient Related Pages '''
 # Search ingredient based on keyword, using SQL technique "LIKE '$[keyword]%'"
 def IngredientSearchPageView(request):
     ingredientInfo = []
@@ -350,8 +352,9 @@ def IngredientSearchPageView(request):
             context['keyword_entered'] = ingredient_name
     else:
         form = KeywordSearchRecipeForm()
-
+    micronutrient = executeSQL("SELECT * FROM Micronutrient;")
     context['ingredientInfo'] = ingredientInfo
+    context['micronutrient'] = micronutrient
     return render(request, 'PeopleEatSmartApp/ingredient.html', context)
 
 # Show all the ingredients
@@ -361,6 +364,7 @@ def view_ingredient(request):
     return render(request, 'PeopleEatSmartApp/ingredients_all.html', context)
 
 
+''' TODO Pages'''
 # Add ratings and comments for recipes.
 def rate_recipe(request):
     recipename = ""
@@ -387,6 +391,8 @@ def rate_recipe(request):
                'ratingvalue': ratingvalue, 'comment': comment}
     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
+
+''' Abandoned Views '''
 # First advanced query from stage 3.
 # def advanced_search(request):
     # recipeInfo = []

@@ -3,6 +3,27 @@
 {% load static %}
 
 {% block content %}
+<!-- <style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  #myInput {
+    background-image: url('/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+  
+  #myTable th, #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+  </style> -->
   <br>
   <div style="margin-left: 20%; margin-right: 20%;">
     <div style="background-color: rgba(0, 0, 0, 0.15); ">
@@ -35,7 +56,38 @@
               </div>
           </form>
           <!-- Keyword Search Recipe -->
-          <hr><br>
+          <hr>
+
+          <!-- Buttons trigger collapse -->
+          <a
+          data-mdb-toggle="collapse"
+          href="#collapseExample"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+          style="font-size: medium; color: lightblue"
+          >
+            Advanced Search
+          </a>
+          <!-- Collapsed content -->
+          <div class="collapse mt-3" id="collapseExample">
+            <input type="text" id="myInput" class="form-control rounded" onkeyup="myFunction()" placeholder="Search for micronutrient names.." title="Type in a name">
+              <br>
+              <table id="myTable" class="table align-middle">
+                <tr class="table-light">
+                  <th style="width:60%;">Micronutrient ID</th>
+                  <th style="width:40%;">Micronutrient Name</th>
+                </tr>
+                {% for m in micronutrient %}
+                <tr class="table-light">
+                  <td>{{ m.NutrientID }}</td>
+                  <td>{{ m.NutrientName }}</td>
+                </tr>
+                {% endfor %}
+              </table>
+          </div>
+
+          <br>
           {% if keyword_entered %}
             {% if ingredientInfo %}
               <p style="font-family: fantasy; font-size:xx-large;">Ingredient Result for {{ keyword_entered }}: </p>
@@ -71,12 +123,9 @@
               </div>
             {% endif %}
           {% endif %}
-
-          
         </div>        
     </div>
   </div>
-
   {% if recipeInfo %}
       <div class="center">
           <table>
@@ -95,4 +144,25 @@
           </table>
       </div>
   {% endif %}
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
 {% endblock content %}
