@@ -6,94 +6,144 @@
 <div style="margin-left: 20%; margin-right: 20%;">
     <div style="background-color: rgba(0, 0, 0, 0.15); ">
         <div style="padding-left: 5%; padding-top: 5%; padding-right: 5%;">
-            <div class="card text-black mb-3" style="width: 100%;">
-                <div class="card-body">
-                    <form action="" method="post">
-                        <p class="card-text">
-                            {% csrf_token %}
-                            <div>
-                                {% if user.is_authenticated %}
-                                <h5>You Logged in As: {{ user.username }}</h5><hr>
-                                <h5>Create your own recipe:</h5><br>
-                                <label for="RecipeName">Recipe Name: </label>
-                                <input id="RecipeName" type="text" name="RecipeName" class="input">
-                                <br><br>
-                                <label for="Description">Description: </label>
-                                <input id="Description" type="text" name="Description" class="input" size="50">
-                                <br><br>
-                                <label for="PictureURL">PictureURL: </label>
-                                <input id="PictureURL" type="text" name="PictureURL" class="input" size="50">
-                                <br><br>
-                                <label for="CookTimeMinutes">Cook Time (Minutes): </label>
-                                <input id="CookTimeMinutes" type="int" name="CookTimeMinutes" class="input" size="5">
-                                <br><br>
-                                <label for="PrepTimeMinutes">Preparation Time (Minutes): </label>
-                                <input id="PrepTimeMinutes" type="int" name="PrepTimeMinutes" class="input" size="5">
-                                <br><br>
-                                <label for="TotalTimeMinutes">Total Time (Minutes): </label>
-                                <input id="TotalTimeMinutes" type="int" name="TotalTimeMinutes" class="input" size="5">
-                                <br><br>
-                                
-                                <div id="AddIngredients">
-                                    Ingredients: <input type="button" class="" style="font-size: 10px;" value="Add an ingredient" onclick="createNewIngredient();"/>
-                                </div><br>
-                                <div class="form-outline"><ul id="newIngredients"></ul></div>
-                                
-                                <div id="AddInstructions">
-                                    Instructions: <input type="button" class="" style="font-size: 10px;" value="Add an instruction" onclick="createNewInstruction();"/>
-                                </div><br>
-                                <div class="form-outline"><ul id="newInstructions"></ul></div>
-                                
-                                {% endif %}
-                            </div>
-                        </p>
-                        <br>
-                        <button type="submit" class="btn btn-warning btn-rounded">Create</button><br><br>
-                    </form>
-                </div>
-            </div>
-            {% for recipe in my_recipes %}
-                <div class="card text-black" style="width: 90%; height: 300px;">
+            <!-- Buttons trigger collapse -->
+            <button
+            class="btn btn-primary"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#collapseExample"
+            aria-expanded="false"
+            aria-controls="collapseExample"
+            >
+            Create a New Recipe
+            </button>
+
+            <!-- Collapsed content -->
+            <div class="collapse mt-3" id="collapseExample">
+                <div class="card text-black mb-3" style="width: 100%;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ recipe.Name }}</h5>
-                        <p class="card-text">
-                            <ul>
-                                <li>
-                                    {{ recipe.ingredients }}
-                                </li>
-                                <li>
-                                    {{ recipe.instructions }}
-                                </li>
-                            </ul>
-                        </p>
+                        <form action="" method="post">
+                                {% csrf_token %}
+                                <div>
+                                    <h5>You Logged in As: {{ user.username }}</h5><hr>
+                                    <h5>Create your own recipe:</h5><br>
+                                    <label for="RecipeName">Recipe Name: </label><br>
+                                    <input id="RecipeName" type="text" name="RecipeName">
+                                    <br><br>
+                                    <label for="Description">Description: </label><br>
+                                    <textarea id="Description" name="Description" class="input" rows="3" cols="50"></textarea>
+                                    <br><br>
+                                    <label for="PictureURL">PictureURL: </label><br>
+                                    <input id="PictureURL" type="text" name="PictureURL" class="input" size="50">
+                                    <br><br>
+                                    <label for="CookTimeMinutes">Cook Time (Minutes): </label>
+                                    <input id="CookTimeMinutes" type="number" name="CookTimeMinutes" class="input" size="5">
+                                    <br><br>
+                                    <label for="PrepTimeMinutes">Preparation Time (Minutes): </label>
+                                    <input id="PrepTimeMinutes" type="number" name="PrepTimeMinutes" class="input" size="5">
+                                    <br><br>
+                                    <label for="TotalTimeMinutes">Total Time (Minutes): </label>
+                                    <input id="TotalTimeMinutes" type="number" name="TotalTimeMinutes" class="input" size="5">
+                                    <br><br>
+                                    
+                                    <label for="ingredient">Ingredients: (add a semicolon(;) between ingredients)</label><br>
+                                    <textarea id="ingredient" name="ingredient" class="input" rows="4" cols="50"></textarea>
+                                    <br><br>
+
+                                    <label for="instruction">Instructions: (add a semicolon(;) between instructions)</label><br>
+                                    <textarea id="instruction" name="instruction" class="input" rows="4" cols="50"></textarea>
+                                    <br><br>
+                                    <!-- <div id="AddIngredients">
+                                        Ingredients: <input type="button" class="" style="font-size: 10px;" value="Add an ingredient" onclick="createNewIngredient();"/>
+                                    </div><br>
+                                    <ul id="newIngredients" name="ingredient"></ul>
+
+                                    <div id="AddInstructions">
+                                        Instructions: <input type="button" class="" style="font-size: 10px;" value="Add an instruction" onclick="createNewInstruction();"/>
+                                    </div><br>
+                                    <ul id="newInstructions" name="instruction"></ul> -->
+                                </div>
+                            <br>
+                            <button type="submit" class="btn btn-warning btn-rounded">Create</button><br><br>
+                        </form>
                     </div>
                 </div>
+            </div>
+
+            <hr>
+
+            <h1>My Recipes:</h1>
+            {% for recipe in my_recipes %}
+                <div class="card text-black" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recipe.Name }}</h5>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            <div class="col">
+                                <div class="card">
+                                    <br>
+                                    <ul>
+                                        <li>
+                                            Ingredients:
+                                            <ul>
+                                                {% for i in recipe.ingredient_list %}
+                                                <li>
+                                                    {{ i }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            Instructions:
+                                            <ul>
+                                                {% for i in recipe.instruction_list %}
+                                                <li>
+                                                    {{ i }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card">
+                                    <img
+                                        src="{{ recipe.PictureURL }}"
+                                        class="rounded"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
             {% endfor %}
         </div>
     </div>
 </div>
 
 <script>
-    function createNewIngredient() {
-        // First create a DIV element.
-        var txtNewInputBox = document.createElement('div');
+    // function createNewIngredient() {
+    //     ingredient_click_times++
+    //     // First create a DIV element.
+    //     var txtNewInputBox = document.createElement('div');
 
-        // Then add the content (a new input box) of the element.
-        txtNewInputBox.innerHTML = "<li><input type='text' name='ingredient' id='newInputIngredient' size='50'></li><br>";
+    //     // Then add the content (a new input box) of the element.
+    //     txtNewInputBox.innerHTML = "<li><input type='text' name='ingredient' id='newInputIngredient' size='50'></li><br>";
 
-        // Finally put it where it is supposed to appear.
-        document.getElementById("newIngredients").appendChild(txtNewInputBox);
-    }
+    //     // Finally put it where it is supposed to appear.
+    //     document.getElementById("newIngredients").appendChild(txtNewInputBox);
+    // }
 
-    function createNewInstruction() {
-        // First create a DIV element.
-        var txtNewInputBox = document.createElement('div');
+    // function createNewInstruction() {
+    //     // First create a DIV element.
+    //     var txtNewInputBox = document.createElement('div');
 
-        // Then add the content (a new input box) of the element.
-        txtNewInputBox.innerHTML = "<li><input type='text' name='instruction' id='newInputInstruction' size='50'></li><br>";
+    //     // Then add the content (a new input box) of the element.
+    //     txtNewInputBox.innerHTML = "<li><input type='text' name='instruction' id='newInputInstruction' size='50'></li><br>";
 
-        // Finally put it where it is supposed to appear.
-        document.getElementById("newInstructions").appendChild(txtNewInputBox);
-    }
+    //     // Finally put it where it is supposed to appear.
+    //     document.getElementById("newInstructions").appendChild(txtNewInputBox);
+    // }
 </script>
 {% endblock content %}

@@ -12,6 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.db import connection
 from json import dumps
+import re
 
 
 def executeSQL(sql):
@@ -181,17 +182,50 @@ def user_delete(request):
 
 # My recipe page
 def MyRecipePage(request):
-    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe;")
     user = request.user
+    context = {}
     if request.method == 'POST':
-        form = KeywordSearchRecipeForm(request.POST)
+        form = MyRecipeForm(request.POST)
         if form.is_valid():
-            ingredient_name = form.cleaned_data["Name"]
-            ingredientInfo = executeSQL(
-                "SELECT * FROM Ingredient where IngredientName LIKE '%%{}%%' LIMIT 1000;".format(ingredient_name))
+            recipe_name = form.cleaned_data["RecipeName"]
+            description = form.cleaned_data["Description"]
+            picture_url = form.cleaned_data["PictureURL"]
+            cook_time_minutes = form.cleaned_data["CookTimeMinutes"]
+            prep_time_minutes = form.cleaned_data["PrepTimeMinutes"]
+            total_time_minutes = form.cleaned_data["TotalTimeMinutes"]
+            ingredient = form.cleaned_data["ingredient"].split(';')
+            instruction = form.cleaned_data["instruction"].split(';')
+            
+            ingredients = " && ".join(ingredient)
+            instructions = " && ".join(instruction)
+            
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions) VALUES ('{}', '{}', '{}', '{}', {}, {}, {}, '{}', '{}')".format(recipe_name, user.username, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions))
+            max_recipeID = executeSQL("SELECT MAX(RecipeID) AS max_id FROM Recipe;")
+            new_recipeID = max_recipeID[0]['max_id']
+            cursor.execute("INSERT INTO UserRecipes VALUES ('{}', {})".format(user.username, new_recipeID))
     else:
         form = KeywordSearchRecipeForm()
-    context = {"my_recipes": my_recipes, 'user': user}
+    
+    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe;")
+    context["my_recipes"] = my_recipes
+    
+    for recipe in my_recipes:
+        neat_ingredients = recipe["ingredients"].replace("\n", " && ").replace("\r", " && ").split(" && ")
+        neater_ingredients = []
+        for i in neat_ingredients:
+            if i:
+                neater_ingredients.append(i)
+        
+        neat_instructions = recipe["instructions"].replace("\n", " && ").replace("\r", " && ").split(" && ")
+        neater_instructions = []
+        for i in neat_instructions:
+            if i:
+                neater_instructions.append(i)
+
+        recipe["ingredient_list"] = neater_ingredients
+        recipe["instruction_list"] =  neater_instructions
+    context['user'] = user
     return render(request, 'PeopleEatSmartApp/my_recipe.html', context)
 
 # My menu page
