@@ -25,8 +25,14 @@ class AdvancedSearchForm(forms.Form):
 
 
 class MyRecipeForm(forms.Form):
-    RecipeName = forms.CharField(label="RecipeName", max_length=100)
-
+    RecipeName = forms.CharField(label="RecipeName")
+    Description = forms.CharField(label="Description")
+    PictureURL = forms.CharField(label="PictureURL")
+    CookTimeMinutes = forms.IntegerField(label="CookTimeMinutes")
+    PrepTimeMinutes = forms.IntegerField(label="PrepTimeMinutes")
+    TotalTimeMinutes = forms.IntegerField(label="TotalTimeMinutes")
+    ingredient = forms.CharField(label="ingredient")
+    instruction = forms.CharField(label="instruction")
 
 class UserDietType(forms.Form):
     DietType = forms.CharField(label="DietType", max_length=100)
