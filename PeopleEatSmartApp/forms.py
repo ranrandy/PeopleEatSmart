@@ -26,13 +26,13 @@ class AdvancedSearchForm(forms.Form):
 
 class MyRecipeForm(forms.Form):
     RecipeName = forms.CharField(label="RecipeName")
-    Description = forms.CharField(label="Description")
-    PictureURL = forms.CharField(label="PictureURL")
-    CookTimeMinutes = forms.IntegerField(label="CookTimeMinutes")
-    PrepTimeMinutes = forms.IntegerField(label="PrepTimeMinutes")
-    TotalTimeMinutes = forms.IntegerField(label="TotalTimeMinutes")
+    Description = forms.CharField(label="Description", required=False)
+    PictureURL = forms.CharField(label="PictureURL", required=False)
+    CookTimeMinutes = forms.IntegerField(label="CookTimeMinutes", required=False)
+    PrepTimeMinutes = forms.IntegerField(label="PrepTimeMinutes", required=False)
+    TotalTimeMinutes = forms.IntegerField(label="TotalTimeMinutes", required=False)
     ingredient = forms.CharField(label="ingredient")
-    instruction = forms.CharField(label="instruction")
+    instruction = forms.CharField(label="instruction", required=False)
 
 class UserDietType(forms.Form):
     DietType = forms.CharField(label="DietType", max_length=100)

@@ -7,12 +7,113 @@
     <div style="background-color: rgba(0, 0, 0, 0.15);">
         <div style="margin-left: 2%; margin-right: 2%;">
             <br>
-            <h2>{{ recipe.Name }}</h2><hr>
+            <h2>{{ recipe.Name }}</h2>
+            {% if is_from_current_user %}
+            <!-- Buttons trigger collapse -->
+            <button
+            class="btn btn-primary"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#collapseEdit"
+            aria-expanded="false"
+            aria-controls="collapseEdit"
+            name="edit"
+            >
+            Edit
+            </button>
+            <button 
+            type="button" 
+            class="btn btn-danger" 
+            data-mdb-toggle="collapse"
+            data-mdb-target="#collapseExample"
+            aria-expanded="false"
+            aria-controls="collapseExample"
+            name="delete">
+            Delete
+            </button>
+
+            <!-- Collapsed Edit -->
+            <div class="collapse mt-3" id="collapseEdit">
+                <div class="card text-black mb-3" style="width: 100%;">
+                    <div class="card-body">
+                        <form action="" method="post">
+                                {% csrf_token %}
+                                <div>
+                                    <h5>You Logged in As: {{ user.username }}</h5><hr>
+                                    <h5>Update your own recipe:</h5><br>
+                                    <label for="RecipeName">Recipe Name: </label><br>
+                                    <input id="RecipeName" type="text" name="RecipeName" value='{{ recipe.Name }}' required>
+                                    <br><br>
+                                    <label for="Description">Description: </label><br>
+                                    <textarea id="Description" name="Description" class="input" rows="3" cols="50">{{ recipe.description }}</textarea>
+                                    <br><br>
+                                    <label for="PictureURL">PictureURL: </label><br>
+                                    <input id="PictureURL" type="text" name="PictureURL" class="input" value="{{ recipe.PictureURL }}" size="50">
+                                    <br><br>
+                                    <label for="CookTimeMinutes">Cook Time (Minutes): </label>
+                                    <input id="CookTimeMinutes" type="number" name="CookTimeMinutes" class="input" value="{{ recipe.cook_time_minutes }}" size="5">
+                                    <br><br>
+                                    <label for="PrepTimeMinutes">Preparation Time (Minutes): </label>
+                                    <input id="PrepTimeMinutes" type="number" name="PrepTimeMinutes" class="input" value="{{ recipe.prep_time_minutes }}" size="5">
+                                    <br><br>
+                                    <label for="TotalTimeMinutes">Total Time (Minutes): </label>
+                                    <input id="TotalTimeMinutes" type="number" name="TotalTimeMinutes" class="input" value="{{ recipe.total_time_minutes }}" size="5">
+                                    <br><br>
+                                    
+                                    <label for="ingredient">Ingredients: (add a semicolon(;) between ingredients)</label><br>
+                                    <textarea id="ingredient" name="ingredient" class="input" rows="4" cols="50" required>{{ ingredients_at_input_area }}</textarea>
+                                    <br><br>
+
+                                    <label for="instruction">Instructions: (add a semicolon(;) between instructions)</label><br>
+                                    <textarea id="instruction" name="instruction" class="input" rows="4" cols="50"> {{ instructions_at_input_area }} </textarea>
+                                    <br><br>
+                                </div>
+                            <br>
+                            <button type="submit" class="btn btn-info btn-rounded">Update</button><br><br>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Collapsed Delete -->
+            <div class="collapse mt-3" id="collapseExample">
+                <div class="card text-black mb-3" style="width: 100%;">
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <button 
+                            type="button" 
+                            class="btn btn-warning" 
+                            data-mdb-toggle="collapse"
+                            data-mdb-target="#collapseExample"
+                            aria-expanded="false"
+                            aria-controls="collapseExample"
+                            name="delete">
+                            Cancel
+                            </button>
+                            <button 
+                            type="submit" 
+                            class="btn btn-danger" 
+                            data-mdb-toggle="collapse"
+                            data-mdb-target="#collapseExample"
+                            aria-expanded="false"
+                            aria-controls="collapseExample"
+                            name="delete">
+                            Confirm Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <hr>
             <p> Rating: {{ recipe.AvgRating }} ({{ recipe.RatingCount }})</p>
             <a href="{{ recipe.PictureURL }}">
                 <img
                 src="{{ recipe.PictureURL }}"
                 class="img-fluid rounded"
+                height=auto
+                width="400px"
                 />
             </a><br><br>
             <ul>
@@ -46,7 +147,7 @@
                 <li>
                     Instructions: 
                     <ul>
-                        {% for i in ingredients_list%}
+                        {% for i in instructions_list%}
                             {% if i %}
                                 <li>{{ i }}</li>
                             {% endif %}
@@ -54,8 +155,29 @@
                     </ul>
                 </li>
             </ul>
+            <hr>
+            <br>
+            <h2>Comments:</h2>
+            {{ ingredient }} {{ recipe_name }} {{test}}
+            {% if rating_comment %}
+                {% for comment in rating_comment %}
+                    <div class="card text-black">
+                        <div class="card-body" style="background-color: rgba(0, 0, 0, 0.2);">
+                        <h5 class="card-title">user: {{ comment.UserName }} ({{ comment.RatingValue }})</h5>
+                        <p class="card-text">
+                            comment: {{ comment.COMMENT }}
+                        </p>
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                <br><br>
+                <h4 style="text-align: center">No comment yet</h4>
+                <br><br>
+            {% endif %}
+            <br>
         </div>
   </div>
 </div>
-
 {% endblock content %}
