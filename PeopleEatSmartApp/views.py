@@ -217,7 +217,17 @@ def MyRecipePage(request):
 
 
 def MyMenuPage(request):
-    return render(request, 'PeopleEatSmartApp/my_menu.html')
+    context = {}
+    if request.method == 'POST':
+        form = KeywordSearchRecipeForm(request.POST)
+        if form.is_valid():
+            recipe_name = form.cleaned_data["Name"]
+            recipeInfo = executeSQL(
+                "SELECT * FROM Recipe where Name LIKE '%%{}%%' LIMIT 1000;".format(recipe_name))
+            context['keyword_entered'] = recipe_name
+    else:
+        form = KeywordSearchRecipeForm()
+    return render(request, 'PeopleEatSmartApp/my_menu.html', context)
 
 # Recipe Display Related Pages
 # Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".

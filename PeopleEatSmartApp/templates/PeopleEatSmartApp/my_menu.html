@@ -2,5 +2,90 @@
 {% load static %}
 
 {% block content %}
-    <h1>My Menu</h1>
+<br>
+<div style="margin-left: 20%; margin-right: 20%;">
+    <div style="background-color: rgba(0, 0, 0, 0.15); ">
+        <div style="padding-left: 5%; padding-top: 5%; padding-right: 5%;">
+            <!-- Buttons trigger collapse -->
+            <button
+            class="btn btn-primary"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#collapseExample"
+            aria-expanded="false"
+            aria-controls="collapseExample"
+            >
+            Create a New Menu
+            </button>
+
+            <!-- Collapsed content -->
+            <div class="collapse mt-3" id="collapseExample">
+                <div class="card text-black mb-3" style="width: 100%;">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="input-group rounded">
+                                <label for="Name"></label>
+                                <input id="Name" type="text" class="form-control rounded"  name="Name" placeholder="Keyword Search Recipe"/>&nbsp
+                                <!-- <input type="submit" class="btn btn-primary rounded" value="Search"> -->
+                                <button class="btn btn-primary rounded" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <h1>My Menus</h1>
+            {% for recipe in my_recipes %}
+                <div class="card text-black" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recipe.Name }}</h5>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            <div class="col">
+                                <div class="card">
+                                    <br>
+                                    <ul>
+                                        <li>
+                                            Ingredients:
+                                            <ul>
+                                                {% for i in recipe.ingredient_list %}
+                                                <li>
+                                                    {{ i }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            Instructions:
+                                            <ul>
+                                                {% for i in recipe.instruction_list %}
+                                                <li>
+                                                    {{ i }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card">
+                                    <img
+                                        src="{{ recipe.PictureURL }}"
+                                        class="rounded"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock content %}

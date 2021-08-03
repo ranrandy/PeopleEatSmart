@@ -72,7 +72,7 @@
 
             <hr>
 
-            <h1>My Recipes:</h1>
+            <h1>My Recipes</h1>
             {% for recipe in my_recipes %}
                 <div class="card text-black" style="width: 100%;">
                     <div class="card-body">
@@ -114,6 +114,13 @@
                                 </div>
                             </div>
                         </div>
+                        <form action="" method="post">
+                            <button type="button" class="btn btn-info">Edit</button>
+                        </form>
+                        <br>
+                        <form action="" method="post">
+                            <button type="submit" class="btn btn-danger" style="font-size: small;"> Delete </button>
+                        </form>
                     </div>
                 </div>
                 <br>
