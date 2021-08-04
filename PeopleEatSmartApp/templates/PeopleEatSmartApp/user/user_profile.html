@@ -59,7 +59,9 @@
       height="40"
       />
     <hr>
-    {% if user_ratings %}
+    {{test}}
+    {% if ratingInfo %}
+ 
         <table class="table align-middle">
         <thead>
             <tr class="table-light">
@@ -70,12 +72,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for ratingInfo in user_ratings %}
+            {% for temp in ratingInfo %}
             <tr class="table-light">
-            <td>{{ rec.Name }}</td>
-            <td>{{ ratingInfo.ID }}</td>
-            <td>{{ ratingInfo.RatingValue }}</td>
-            <td>{{ ratingInfo.COMMENT }} cal</td>
+            <td>{{ temp.Name }}</td>
+            <td>{{ temp.ID }}</td>
+            <td>{{ temp.RatingValue }}</td>
+            <td>{{ temp.COMMENT }} cal</td>
             </tr>
             {% endfor%}
         </tbody>
