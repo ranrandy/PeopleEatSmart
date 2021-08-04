@@ -20,14 +20,12 @@
     <tr class ="table-primary">
       <th scope="col"></th>
       <th scope="col">User Name</th>
-      <th scope="col">Password</th>
     </tr>
   </thead>
   <tbody>
     <tr class ="table-secondary">
       <th scope="row">Information</th>
       <td>{{user.username}}</td>
-      <td>{{user.password}}</td>
     </tr>
   </tbody>
 </table>
@@ -56,12 +54,16 @@
   <div style="background-color: rgba(0, 0, 0, 0.15); padding-left: 2%; padding-right: 2%; color: black;">
     <br>
     <img
-      src="{% static 'assets/ingredient_dictionary.png' %}"
+      border: 1px solid #ddd;
+      src="{% static 'assets/MyReviews.png' %}"
       alt=""
+      width = "400"
       height="40"
       />
     <hr>
-    {% if user_ratings %}
+    {{test}}
+    {% if ratingInfo %}
+ 
         <table class="table align-middle">
         <thead>
             <tr class="table-light">
@@ -72,12 +74,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for ratingInfo in user_ratings %}
+            {% for temp in ratingInfo %}
             <tr class="table-light">
-            <td>{{ rec.Name }}</td>
-            <td>{{ ratingInfo.ID }}</td>
-            <td>{{ ratingInfo.RatingValue }}</td>
-            <td>{{ ratingInfo.COMMENT }} cal</td>
+            <td>{{ temp.Name }}</td>
+            <td>{{ temp.ID }}</td>
+            <td>{{ temp.RatingValue }}</td>
+            <td>{{ temp.COMMENT }} cal</td>
             </tr>
             {% endfor%}
         </tbody>

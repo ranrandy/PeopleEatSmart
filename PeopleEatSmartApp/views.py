@@ -16,6 +16,8 @@ from json import dumps
 
 
 ''' Execute SQL Query and Return a Dictionary '''
+
+
 def executeSQL(sql):
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -28,16 +30,22 @@ def executeSQL(sql):
 
 '''Static Pages'''
 # Homepage of the website
+
+
 def HomePageView(request):
     return render(request, 'PeopleEatSmartApp/index.html')
 
 # About page of the website
+
+
 def AboutPageView(request):
     return render(request, 'PeopleEatSmartApp/about.html')
 
 
 '''User Related Pages'''
 # Sign up page of the website
+
+
 def user_signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -51,6 +59,8 @@ def user_signup(request):
     return render(request, 'PeopleEatSmartApp/user/user_signup.html', context)
 
 # Log in page of the website
+
+
 def user_login(request):
     context = {}
     if request.method == 'POST':
@@ -73,17 +83,20 @@ def user_login(request):
     context['form'] = form
     return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
+
 def user_ratings(request):
     ratingInfo = []
     context = {}
-    user = request.user
+    user = request.user.username
     if request.method == 'POST':
         ratingInfo = executeSQL(
-            "Select RecipeID, RatingValue, COMMENT Where UserName Like '%%{}%%';".format(user))
-    context = {'ratingInfo': ratingInfo}
+            "Select RecipeID, RatingValue, COMMENT From RatingComment Where UserName = '{}';".format(user))
+    context = {"test": "hello", 'ratingInfo': ratingInfo}
     return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
 
 # User profile page
+
+
 def user_profile(request):
     user = request.user
     dietInfo = []
@@ -125,6 +138,8 @@ def user_profile(request):
     return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
 
 # Log out of the user's current account
+
+
 def user_logout(request):
     if request.method == 'POST':
         logout(request)
@@ -132,6 +147,8 @@ def user_logout(request):
     return render(request, 'PeopleEatSmartApp/user/user_logout.html')
 
 # TODO: Let user change the password
+
+
 def user_reset_pw(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -149,6 +166,8 @@ def user_reset_pw(request):
     return render(request, 'PeopleEatSmartApp/user/user_reset_pw.html', {'form': form})
 
 # TODO: Let user delete his / her account (username)
+
+
 def user_delete(request):
     username = ""
     password = ""
@@ -172,6 +191,8 @@ def user_delete(request):
 
 ''' CRUD-Operation-Related Page '''
 # My recipe page
+
+
 def MyRecipePage(request):
     user = request.user
     context = {}
@@ -186,40 +207,52 @@ def MyRecipePage(request):
             total_time_minutes = form.cleaned_data["TotalTimeMinutes"]
             ingredient = form.cleaned_data["ingredient"].split(';')
             instruction = form.cleaned_data["instruction"].split(';')
-            
+
             ingredients = " && ".join(ingredient)
             instructions = " && ".join(instruction)
-            
+
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions) VALUES ('{}', '{}', '{}', '{}', {}, {}, {}, '{}', '{}')".format(recipe_name, user.username, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions))
-            max_recipeID = executeSQL("SELECT MAX(RecipeID) AS max_id FROM Recipe;")
+            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions) VALUES ('{}', '{}', '{}', '{}', {}, {}, {}, '{}', '{}')".format(
+                recipe_name, user.username, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions))
+            max_recipeID = executeSQL(
+                "SELECT MAX(RecipeID) AS max_id FROM Recipe;")
             new_recipeID = max_recipeID[0]['max_id']
-            cursor.execute("INSERT INTO UserRecipes VALUES ('{}', {})".format(user.username, new_recipeID))
+            cursor.execute("INSERT INTO UserRecipes VALUES ('{}', {})".format(
+                user.username, new_recipeID))
     else:
         form = MyRecipeForm()
+<<<<<<< HEAD
     
     my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe WHERE Username = '{}';".format(user.username))
+=======
+
+    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe;")
+>>>>>>> cab84cfe1748d537f3006f49c6e8122af6383916
     context["my_recipes"] = my_recipes
-    
+
     for recipe in my_recipes:
-        neat_ingredients = recipe["ingredients"].replace("\n", " && ").replace("\r", " && ").split(" && ")
+        neat_ingredients = recipe["ingredients"].replace(
+            "\n", " && ").replace("\r", " && ").split(" && ")
         neater_ingredients = []
         for i in neat_ingredients:
             if i:
                 neater_ingredients.append(i)
-        
-        neat_instructions = recipe["instructions"].replace("\n", " && ").replace("\r", " && ").split(" && ")
+
+        neat_instructions = recipe["instructions"].replace(
+            "\n", " && ").replace("\r", " && ").split(" && ")
         neater_instructions = []
         for i in neat_instructions:
             if i:
                 neater_instructions.append(i)
 
         recipe["ingredient_list"] = neater_ingredients
-        recipe["instruction_list"] =  neater_instructions
+        recipe["instruction_list"] = neater_instructions
     context['user'] = user
     return render(request, 'PeopleEatSmartApp/my_recipe.html', context)
 
 # My menu page
+
+
 def MyMenuPage(request):
     context = {}
     if request.method == 'POST':
@@ -236,6 +269,8 @@ def MyMenuPage(request):
 
 '''Recipe Display Related Pages'''
 # Search recipe based on keyword, using SQL technique "LIKE '%[keyword]%'".
+
+
 def RecipeSearchPageView(request):
     recipeInfo = []
     context = {}
@@ -265,6 +300,8 @@ def RecipeSearchPageView(request):
     return render(request, 'PeopleEatSmartApp/recipe.html', context)
 
 # Show all the recipes, TODO: but has a limitation of 100 in 1 page.
+
+
 def view_recipe(request):
     recipes_all = executeSQL("SELECT * FROM Recipe limit 1000")
     # recipes_all_json = dumps(recipes_all)
@@ -285,6 +322,8 @@ def view_recipe(request):
     return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
+
+
 def show_recipe(request, recipe_id):
     context = {}
     if request.method == 'POST':
@@ -298,37 +337,43 @@ def show_recipe(request, recipe_id):
             total_time_minutes = form.cleaned_data["TotalTimeMinutes"]
             ingredient = form.cleaned_data["ingredient"].split(';')
             instruction = form.cleaned_data["instruction"].split(';')
-            
+
             ingredients = " && ".join(ingredient)
             instructions = " && ".join(instruction)
-            
+
             cursor = connection.cursor()
-            cursor.execute('UPDATE Recipe SET Name = "{}", description = "{}", PictureURL = "{}", cook_time_minutes = {}, prep_time_minutes = {}, total_time_minutes = {}, ingredients = "{}", instructions = "{}" WHERE RecipeID = {}'.format(recipe_name, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions, recipe_id))
+            cursor.execute('UPDATE Recipe SET Name = "{}", description = "{}", PictureURL = "{}", cook_time_minutes = {}, prep_time_minutes = {}, total_time_minutes = {}, ingredients = "{}", instructions = "{}" WHERE RecipeID = {}'.format(
+                recipe_name, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions, recipe_id))
     else:
         form = MyRecipeForm()
 
     if request.method == 'POST' and 'delete' in request.POST:
         cursor = connection.cursor()
-        cursor.execute("DELETE FROM UserRecipes WHERE RecipeID = {};".format(recipe_id))
-        cursor.execute("DELETE FROM RatingComment WHERE RecipeID = {};".format(recipe_id))
-        cursor.execute("DELETE FROM Recipe WHERE RecipeID = {};".format(recipe_id))
+        cursor.execute(
+            "DELETE FROM UserRecipes WHERE RecipeID = {};".format(recipe_id))
+        cursor.execute(
+            "DELETE FROM RatingComment WHERE RecipeID = {};".format(recipe_id))
+        cursor.execute(
+            "DELETE FROM Recipe WHERE RecipeID = {};".format(recipe_id))
         return render(request, 'PeopleEatSmartApp/my_recipe.html')
 
     recipe = executeSQL(
         "SELECT * FROM Recipe WHERE RecipeID = {}".format(recipe_id))
-    if not len(recipe): 
+    if not len(recipe):
         raise Http404("Recipe does not exist")
     recipe = recipe[0]
     ingredients_list = recipe['ingredients'].split(' && ')
     instructions_list = recipe['instructions'].split(' && ')
-    rating_comment = executeSQL("SELECT * FROM RatingComment WHERE RecipeID = {};".format(recipe_id))
+    rating_comment = executeSQL(
+        "SELECT * FROM RatingComment WHERE RecipeID = {};".format(recipe_id))
     current_user = request.user
-    user_recipes = executeSQL('SELECT * FROM UserRecipes WHERE Username = "{}";'.format(current_user.username))
+    user_recipes = executeSQL(
+        'SELECT * FROM UserRecipes WHERE Username = "{}";'.format(current_user.username))
     is_from_current_user = False
     for u_r in user_recipes:
         if u_r['RecipeID'] == recipe_id:
             is_from_current_user = True
-    
+
     ingredients_at_input_area = recipe['ingredients'].replace(' && ', ';')
     instructions_at_input_area = recipe['instructions'].replace(' && ', ';')
 
@@ -337,7 +382,7 @@ def show_recipe(request, recipe_id):
 
     context = {'recipe': recipe, 'ingredients_list': ingredients_list,
                'instructions_list': instructions_list, 'rating_comment': rating_comment,
-               'is_from_current_user': is_from_current_user, 
+               'is_from_current_user': is_from_current_user,
                'ingredients_at_input_area': ingredients_at_input_area,
                'instructions_at_input_area': instructions_at_input_area}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
@@ -345,6 +390,8 @@ def show_recipe(request, recipe_id):
 
 ''' Ingredient Related Pages '''
 # Search ingredient based on keyword, using SQL technique "LIKE '$[keyword]%'"
+
+
 def IngredientSearchPageView(request):
     ingredientInfo = []
     context = {}
@@ -380,9 +427,11 @@ def IngredientSearchPageView(request):
                     compare_sign = "<"
                 else:
                     return Http404("Invalid Comparison Sign!")
-                sql_clause = " (NutrientName = '{}' AND Quantity {} {})".format(nutrient_name, compare_sign, quantity)
+                sql_clause = " (NutrientName = '{}' AND Quantity {} {})".format(
+                    nutrient_name, compare_sign, quantity)
                 subquery_sentence += sql_clause
-            subquery_sentence += " Group By IngredientID HAVING COUNT(DISTINCT NutrientName) >= {}) AS ingredient_want ".format(len(requirement_list))
+            subquery_sentence += " Group By IngredientID HAVING COUNT(DISTINCT NutrientName) >= {}) AS ingredient_want ".format(
+                len(requirement_list))
             where_clause = " WHERE "
             for requirement in requirement_list:
                 if requirement_list.index(requirement):
@@ -397,14 +446,21 @@ def IngredientSearchPageView(request):
     else:
         form = KeywordSearchRecipeForm()
 
-    micronutrient_a = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'a%' OR NutrientName LIKE 'b%' OR NutrientName LIKE 'c%' ORDER BY NutrientName;")
-    micronutrient_d = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'd%' OR NutrientName LIKE 'e%' OR NutrientName LIKE 'f%' OR NutrientName LIKE 'g%' ORDER BY NutrientName;")
-    micronutrient_h = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'h%' OR NutrientName LIKE 'i%' OR NutrientName LIKE 'j%' OR NutrientName LIKE 'k%' ORDER BY NutrientName;")
-    micronutrient_l = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'l%' OR NutrientName LIKE 'm%' OR NutrientName LIKE 'n%' OR NutrientName LIKE 'o%' ORDER BY NutrientName;")
-    micronutrient_p = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'p%' OR NutrientName LIKE 'q%' OR NutrientName LIKE 'r%' OR NutrientName LIKE 's%' ORDER BY NutrientName;")
-    micronutrient_t = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 't%' OR NutrientName LIKE 'u%' OR NutrientName LIKE 'v%' OR NutrientName LIKE 'w%' ORDER BY NutrientName;")
-    micronutrient_x = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'x%' OR NutrientName LIKE 'y%' OR NutrientName LIKE 'z%' ORDER BY NutrientName;")
-    
+    micronutrient_a = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'a%' OR NutrientName LIKE 'b%' OR NutrientName LIKE 'c%' ORDER BY NutrientName;")
+    micronutrient_d = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'd%' OR NutrientName LIKE 'e%' OR NutrientName LIKE 'f%' OR NutrientName LIKE 'g%' ORDER BY NutrientName;")
+    micronutrient_h = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'h%' OR NutrientName LIKE 'i%' OR NutrientName LIKE 'j%' OR NutrientName LIKE 'k%' ORDER BY NutrientName;")
+    micronutrient_l = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'l%' OR NutrientName LIKE 'm%' OR NutrientName LIKE 'n%' OR NutrientName LIKE 'o%' ORDER BY NutrientName;")
+    micronutrient_p = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'p%' OR NutrientName LIKE 'q%' OR NutrientName LIKE 'r%' OR NutrientName LIKE 's%' ORDER BY NutrientName;")
+    micronutrient_t = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 't%' OR NutrientName LIKE 'u%' OR NutrientName LIKE 'v%' OR NutrientName LIKE 'w%' ORDER BY NutrientName;")
+    micronutrient_x = executeSQL(
+        "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'x%' OR NutrientName LIKE 'y%' OR NutrientName LIKE 'z%' ORDER BY NutrientName;")
+
     context['micronutrient_a'] = micronutrient_a
     context['micronutrient_d'] = micronutrient_d
     context['micronutrient_h'] = micronutrient_h
@@ -416,6 +472,8 @@ def IngredientSearchPageView(request):
     return render(request, 'PeopleEatSmartApp/ingredient.html', context)
 
 # Show all the ingredients
+
+
 def view_ingredient(request):
     ingredients_all = executeSQL("SELECT * FROM Ingredient limit 1000;")
     context = {'ingredients_all': ingredients_all}
@@ -424,6 +482,8 @@ def view_ingredient(request):
 
 ''' TODO Pages'''
 # Add ratings and comments for recipes.
+
+
 def rate_recipe(request):
     recipename = ""
     username = "randy"
@@ -453,60 +513,60 @@ def rate_recipe(request):
 ''' Abandoned Views '''
 # First advanced query from stage 3.
 # def advanced_search(request):
-    # recipeInfo = []
-    # if request.method == 'POST':
-    #     form = AdvancedSearchForm(request.POST)
-    #     if form.is_valid():
-    #         nutrient_name = form.cleaned_data["NutrientName"]
-    #         recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating, RecipeID FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE (m.NutrientName = '{}' OR m.NutrientName LIKE '%%{}%%') AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe) LIMIT 50;".format(nutrient_name, nutrient_name))
-    # else:
-    #     form = KeywordSearchRecipeForm()
-    # context = {'recipeInfo': recipeInfo}
-    # return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
+# recipeInfo = []
+# if request.method == 'POST':
+#     form = AdvancedSearchForm(request.POST)
+#     if form.is_valid():
+#         nutrient_name = form.cleaned_data["NutrientName"]
+#         recipeInfo = executeSQL("SELECT DISTINCT r.Name, AvgRating, RecipeID FROM Ingredient i NATURAL JOIN Contains c NATURAl JOIN Micronutrient m NATURAL JOIN IngredientOf ino NATURAL JOIN Recipe r WHERE (m.NutrientName = '{}' OR m.NutrientName LIKE '%%{}%%') AND r.AvgRating >= (SELECT AVG(AvgRating) FROM Recipe) LIMIT 50;".format(nutrient_name, nutrient_name))
+# else:
+#     form = KeywordSearchRecipeForm()
+# context = {'recipeInfo': recipeInfo}
+# return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
 
 # Second advanced query from stage 3.
 # def advanced_search_2(request):
-    # query_result = []
-    # if request.method == 'POST':
-    #     form = AdvancedSearchForm(request.POST)
-    #     if form.is_valid():
-    #         nutrient_name = form.cleaned_data["NutrientName"]
-    #         query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(
-    #             nutrient_name, nutrient_name)
-    #         query_result = executeSQL(query)
-    # else:
-    #     form = KeywordSearchRecipeForm()
-    # context = {'query_result': query_result}
-    # return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
+# query_result = []
+# if request.method == 'POST':
+#     form = AdvancedSearchForm(request.POST)
+#     if form.is_valid():
+#         nutrient_name = form.cleaned_data["NutrientName"]
+#         query = "SELECT IngredientName, COUNT(RecipeID) as CountOfRecipe FROM IngredientOf NATURAL JOIN Ingredient NATURAL JOIN Recipe NATURAL JOIN Contains NATURAL JOIN Micronutrient m WHERE AvgRating > 3 AND Quantity > 5 AND m.NutrientName = '{}' OR m.NutrientName LIKE '%{}%' GROUP BY IngredientID ORDER BY COUNT(RecipeID) DESC LIMIT 50;".format(
+#             nutrient_name, nutrient_name)
+#         query_result = executeSQL(query)
+# else:
+#     form = KeywordSearchRecipeForm()
+# context = {'query_result': query_result}
+# return render(request, 'PeopleEatSmartApp/advanced_search_2.html', context)
 
 
 # def match_ingredient_recipe_view(request):
-    # query = "SELECT IngredientName FROM Ingredient;"
-    # ingredient_names = executeSQL(query)
-    # keyword_list = []
-    # for i in ingredient_names:
-    #     if ingredient_names.index(i) < 15:
-    #         keyword = i['IngredientName'].split(', ')
-    #         improved_keyword = []
-    #         for k in keyword:
-    #             if k not in ('raw', 'uncooked', 'dried'):
-    #                 improved_keyword.append(k)
-    #         # keyword_list.append(keyword)
-    #         where_clauses = ""
-    #         for k in range(len(improved_keyword)):
-    #             if k == 0:
-    #                 where_clause = " IngredientName LIKE \"% {} %\" ".format(
-    #                     improved_keyword[k])
-    #             else:
-    #                 where_clause = " OR IngredientName LIKE \"% {} %\" ".format(
-    #                     improved_keyword[k])
-    #             where_clauses += where_clause
-    #         sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(
-    #             where_clauses)
-    #         query_result = executeSQL(sub_query)
-    #         # keyword_list.append(sub_query)
-    #         keyword_list.append(ingredient_names.index(i))
+# query = "SELECT IngredientName FROM Ingredient;"
+# ingredient_names = executeSQL(query)
+# keyword_list = []
+# for i in ingredient_names:
+#     if ingredient_names.index(i) < 15:
+#         keyword = i['IngredientName'].split(', ')
+#         improved_keyword = []
+#         for k in keyword:
+#             if k not in ('raw', 'uncooked', 'dried'):
+#                 improved_keyword.append(k)
+#         # keyword_list.append(keyword)
+#         where_clauses = ""
+#         for k in range(len(improved_keyword)):
+#             if k == 0:
+#                 where_clause = " IngredientName LIKE \"% {} %\" ".format(
+#                     improved_keyword[k])
+#             else:
+#                 where_clause = " OR IngredientName LIKE \"% {} %\" ".format(
+#                     improved_keyword[k])
+#             where_clauses += where_clause
+#         sub_query = "SELECT * FROM ingredientOf_source WHERE {};".format(
+#             where_clauses)
+#         query_result = executeSQL(sub_query)
+#         # keyword_list.append(sub_query)
+#         keyword_list.append(ingredient_names.index(i))
 
-    # # context = {'keyword': keyword_list}
-    # context = {'query_result': query_result, 'test': keyword_list}
-    # return render(request, 'PeopleEatSmartApp/ingredient_recipe_search.html', context)
+# # context = {'keyword': keyword_list}
+# context = {'query_result': query_result, 'test': keyword_list}
+# return render(request, 'PeopleEatSmartApp/ingredient_recipe_search.html', context)
