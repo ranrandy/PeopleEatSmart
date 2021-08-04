@@ -315,8 +315,10 @@ def RecipeSearchPageView(request):
                 input0 = nList['NutrientID']
             procedureInfo = executeSQL("call Res({},{},{},{})".format(input0,weight,input1,input2))
             context['procedureInfo'] = procedureInfo
-
-
+            context['keyword_entered'] = user_input
+            for p in context['procedureInfo']:
+                p['RecipeID'] = executeSQL("SELECT RecipeID FROM Recipe WHERE Name = \"{}\";".format(p['RecipeName']))[0]['RecipeID']
+            
     recipes_1 = []
     recipes_2 = []
     recipes_3 = []
@@ -346,6 +348,7 @@ def RecipeSearchPageView(request):
             "SELECT * FROM Micronutrient WHERE NutrientName LIKE 't%' OR NutrientName LIKE 'u%' OR NutrientName LIKE 'v%' OR NutrientName LIKE 'w%' ORDER BY NutrientName;")
     micronutrient_x = executeSQL(
             "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'x%' OR NutrientName LIKE 'y%' OR NutrientName LIKE 'z%' ORDER BY NutrientName;")
+    diet_types = executeSQL("SELECT * FROM Diet;")
 
     context['micronutrient_a'] = micronutrient_a
     context['micronutrient_d'] = micronutrient_d
@@ -354,6 +357,7 @@ def RecipeSearchPageView(request):
     context['micronutrient_p'] = micronutrient_p
     context['micronutrient_t'] = micronutrient_t
     context['micronutrient_x'] = micronutrient_x
+    context['diet_types'] = diet_types
 
     return render(request, 'PeopleEatSmartApp/recipe.html', context)
 
@@ -376,7 +380,13 @@ def view_recipe(request):
         i += 1
     context = {'recipe_1': recipes_1,
                'recipe_2': recipes_2, 'recipe_3': recipes_3}
-
+    # recipes = executeSQL("SELECT RecipeID, AVG(RatingValue) as avg_r FROM Recipe NATURAL JOIN RatingComment GROUP BY RecipeID;")
+    
+    # cursor = connection.cursor()
+    # for r in recipes:
+    #     if r:
+    #         r['avg_r'] = round(r['avg_r'], 2)
+    #         cursor.execute("UPDATE Recipe SET AvgRating = {} WHERE RecipeID = {}".format(r['avg_r'], r['RecipeID']))
     return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
@@ -384,7 +394,7 @@ def view_recipe(request):
 
 def show_recipe(request, recipe_id):
     context = {}
-    if request.method == 'POST':
+    if request.method == 'POST' and 'edit' in request.POST:
         form = MyRecipeForm(request.POST)
         if form.is_valid():
             recipe_name = form.cleaned_data["RecipeName"]
@@ -415,6 +425,18 @@ def show_recipe(request, recipe_id):
             "DELETE FROM Recipe WHERE RecipeID = {};".format(recipe_id))
         return render(request, 'PeopleEatSmartApp/my_recipe.html')
 
+    if request.method == 'POST' and 'comment_publish' in request.POST:
+        # create a form instance and populate it with data from the request:
+        form = RatingCommentForm(request.POST)
+        if form.is_valid():
+            username = request.user.username
+            ratingvalue = form.cleaned_data["RatingValue"]
+            comment = form.cleaned_data["Comment"]
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", {});".format(
+                ratingvalue, comment, username, recipe_id))
+    else:
+        form = RatingCommentForm()
     recipe = executeSQL(
         "SELECT * FROM Recipe WHERE RecipeID = {}".format(recipe_id))
     if not len(recipe):
@@ -538,37 +560,33 @@ def view_ingredient(request):
     return render(request, 'PeopleEatSmartApp/ingredients_all.html', context)
 
 
-''' TODO Pages'''
-# Add ratings and comments for recipes.
-
-
-def rate_recipe(request):
-    recipename = ""
-    username = "randy"
-    ratingvalue = -1
-    comment = ""
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = RatingCommentForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["UserName"]
-            recipename = form.cleaned_data["RecipeName"]
-            ratingvalue = form.cleaned_data["RatingValue"]
-            comment = form.cleaned_data["Comment"]
-            cursor = connection.cursor()
-            cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", (SELECT RecipeID FROM Recipe WHERE Name = \"{}\"));".format(
-                str(ratingvalue), comment, username, recipename))
-            return HttpResponse("Successful Comment!")
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = RatingCommentForm()
-    context = {'recipename': recipename, 'username': username,
-               'ratingvalue': ratingvalue, 'comment': comment}
-    return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
-
-
 ''' Abandoned Views '''
+# Add ratings and comments for recipes.
+# def rate_recipe(request):
+#     recipename = ""
+#     username = "randy"
+#     ratingvalue = -1
+#     comment = ""
+#     # if this is a POST request we need to process the form data
+#     if request.method == 'POST':
+#         # create a form instance and populate it with data from the request:
+#         form = RatingCommentForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data["UserName"]
+#             recipename = form.cleaned_data["RecipeName"]
+#             ratingvalue = form.cleaned_data["RatingValue"]
+#             comment = form.cleaned_data["Comment"]
+#             cursor = connection.cursor()
+#             cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", (SELECT RecipeID FROM Recipe WHERE Name = \"{}\"));".format(
+#                 str(ratingvalue), comment, username, recipename))
+#             return HttpResponse("Successful Comment!")
+#     # if a GET (or any other method) we'll create a blank form
+#     else:
+#         form = RatingCommentForm()
+#     context = {'recipename': recipename, 'username': username,
+#                'ratingvalue': ratingvalue, 'comment': comment}
+#     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
+
 # First advanced query from stage 3.
 # def advanced_search(request):
 # recipeInfo = []

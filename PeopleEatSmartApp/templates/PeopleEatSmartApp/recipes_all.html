@@ -12,6 +12,7 @@
       height="40"
       />
     <hr><br>
+    {{recipes_avg_rating}}
     <div class="row">
       <div class="col-lg-4 col-md-12 mb-4">
         {% for recipe in recipe_3 %}
@@ -78,19 +79,5 @@
       </div>
     </div>
   <!-- <h5 id='neatdata'></h5> -->
-</div>
-
-  
-
-<script>
-  // var recipes_all_json = JSON.parse("{{recipes_all_json|escapejs}}");
-  // // var dataNode = document.getElementById('alldata');
-  // // dataNode.innerHTML+="{{recipes_all_json|escapejs}}";
-  // dataNode = document.getElementById('neatdata');
-  // for(var x in recipes_all_json){
-  //   dataNode.innerHTML += x+' : '+recipes_all_json[x].Name+'<br><br>';
-  // }
-</script>
-
-  
+</div>  
 {% endblock content %}

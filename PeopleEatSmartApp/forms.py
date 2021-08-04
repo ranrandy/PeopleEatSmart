@@ -8,8 +8,8 @@ class SignUpForm(forms.Form):
 
 
 class RatingCommentForm(forms.Form):
-    UserName = forms.CharField(label='UserName', max_length=100)
-    RecipeName = forms.CharField(label="RecipeName", max_length=1000)
+    # UserName = forms.CharField(label='UserName', max_length=100)
+    # RecipeName = forms.CharField(label="RecipeName", max_length=1000)
     RatingValue = forms.IntegerField(label="RatingValue")
     '''IMPORTANT: the name here must be exactly the same as the name in html file (within <form>)'''
     Comment = forms.CharField(label="Comment", max_length=4096, widget=forms.Textarea)
