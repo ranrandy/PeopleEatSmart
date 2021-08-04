@@ -36,4 +36,3 @@ class MyRecipeForm(forms.Form):
 class UserDietType(forms.Form):
     DietType = forms.CharField(label="DietType", max_length=100)
     Calories = forms.IntegerField(label="Calories")
-    UserName = forms.CharField(label="UserName", max_length=100)

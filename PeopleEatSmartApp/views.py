@@ -98,7 +98,7 @@ def user_ratings(request):
 
 
 def user_profile(request):
-    user = request.user
+    realuser = request.user
     dietInfo = []
     calorie = 0
     context = {}
@@ -110,7 +110,7 @@ def user_profile(request):
         if form.is_valid():
             diet = form.cleaned_data["DietType"]
             calorie = form.cleaned_data["Calories"]
-            user = form.cleaned_data["UserName"]
+            user = request.user.username
             dietInfo = executeSQL(
                 "SELECT * FROM Diet where DietType= '{}';".format(diet))
             if len(dietInfo):
@@ -130,7 +130,8 @@ def user_profile(request):
                         user, diet, carb, protein, fat))
     else:
         form = UserDietType()
-    context = {'user': user}
+
+    context = {'user': realuser}
 
     context['DietTypes'] = executeSQL("SELECT DietType FROM Diet")
     context['Macros'] = {'carb': carb, 'fat': fat, 'Protein': protein}
@@ -221,7 +222,7 @@ def MyRecipePage(request):
                 user.username, new_recipeID))
     else:
         form = MyRecipeForm()
-    
+
     my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe WHERE Username = '{}';".format(user.username))
     context["my_recipes"] = my_recipes
 
@@ -269,7 +270,8 @@ def MyMenuPage(request):
 def RecipeSearchPageView(request):
     recipeInfo = []
     context = {}
-    if request.method == 'POST':
+    procedureInfo = []
+    if request.method == 'POST' and 'RecipeKeysearch' in request.POST:
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             recipe_name = form.cleaned_data["Name"]
@@ -278,6 +280,43 @@ def RecipeSearchPageView(request):
             context['keyword_entered'] = recipe_name
     else:
         form = KeywordSearchRecipeForm()
+
+    if request.method == 'POST' and 'RecipeOp' in request.POST:
+        form = KeywordSearchRecipeForm(request.POST)
+        if form.is_valid():
+            user_input = form.cleaned_data["Name"]
+            input_list = user_input.split(',')
+            n_name = input_list[0].strip()
+            weight = input_list[1].strip()
+            DietType = input_list[2].strip()
+            dietList = executeSQL("Select Carbohydrate, Fat, Protein from Diet where DietType = '{}'".format(DietType))
+            nList = executeSQL("select NutrientID from Micronutrient where NutrientName = '{}'".format(n_name))
+            input0 = 0
+            input1 = 0
+            input2 = 0
+            if len(dietList):
+                dietList = dietList[0]
+                carb = dietList['Carbohydrate']
+                fat = dietList['Fat']
+                protein = dietList['Protein']
+                temp = [carb,fat,protein]
+                temp.sort()
+                if carb == temp[0]:
+                    input1 = 1
+                    input2 = 2
+                elif protein == temp[0]:
+                    input1 = 1
+                    input2 = 3
+                else:
+                    input1 = 2
+                    input2 = 3
+            if len(nList):
+                nList = nList[0]
+                input0 = nList['NutrientID']
+            procedureInfo = executeSQL("call Res({},{},{},{})".format(input0,weight,input1,input2))
+            context['procedureInfo'] = procedureInfo
+
+
     recipes_1 = []
     recipes_2 = []
     recipes_3 = []
@@ -289,9 +328,33 @@ def RecipeSearchPageView(request):
         else:
             recipes_3.append(recipeInfo[i])
         i += 1
+
     context['recipe_1'] = recipes_1
     context['recipe_2'] = recipes_2
     context['recipe_3'] = recipes_3
+    micronutrient_a = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'a%' OR NutrientName LIKE 'b%' OR NutrientName LIKE 'c%' ORDER BY NutrientName;")
+    micronutrient_d = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'd%' OR NutrientName LIKE 'e%' OR NutrientName LIKE 'f%' OR NutrientName LIKE 'g%' ORDER BY NutrientName;")
+    micronutrient_h = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'h%' OR NutrientName LIKE 'i%' OR NutrientName LIKE 'j%' OR NutrientName LIKE 'k%' ORDER BY NutrientName;")
+    micronutrient_l = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'l%' OR NutrientName LIKE 'm%' OR NutrientName LIKE 'n%' OR NutrientName LIKE 'o%' ORDER BY NutrientName;")
+    micronutrient_p = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'p%' OR NutrientName LIKE 'q%' OR NutrientName LIKE 'r%' OR NutrientName LIKE 's%' ORDER BY NutrientName;")
+    micronutrient_t = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 't%' OR NutrientName LIKE 'u%' OR NutrientName LIKE 'v%' OR NutrientName LIKE 'w%' ORDER BY NutrientName;")
+    micronutrient_x = executeSQL(
+            "SELECT * FROM Micronutrient WHERE NutrientName LIKE 'x%' OR NutrientName LIKE 'y%' OR NutrientName LIKE 'z%' ORDER BY NutrientName;")
+
+    context['micronutrient_a'] = micronutrient_a
+    context['micronutrient_d'] = micronutrient_d
+    context['micronutrient_h'] = micronutrient_h
+    context['micronutrient_l'] = micronutrient_l
+    context['micronutrient_p'] = micronutrient_p
+    context['micronutrient_t'] = micronutrient_t
+    context['micronutrient_x'] = micronutrient_x
+
     return render(request, 'PeopleEatSmartApp/recipe.html', context)
 
 # Show all the recipes, TODO: but has a limitation of 100 in 1 page.
@@ -313,7 +376,7 @@ def view_recipe(request):
         i += 1
     context = {'recipe_1': recipes_1,
                'recipe_2': recipes_2, 'recipe_3': recipes_3}
-    
+
     return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
