@@ -119,21 +119,20 @@
                         />
                     </a>
                 </div>
+                {% if radar_chart_para %}
                 <div class="col-sm-6">
                     <div class="card">
-                        <!-- <div class="card-body bg-light"> -->
-                            <canvas
-                            style="color: white;"
-                            data-mdb-chart="radar"
-                            data-mdb-dataset-label="Macronutrient Quantity"
-                            data-mdb-labels="['Protein', 'Fat' , 'Carbohydrate' , 'Calorie']"
-                            data-mdb-dataset-data="[{{radar_chart_para.s_p}}, {{radar_chart_para.s_f}}, {{radar_chart_para.s_ca}}, {{radar_chart_para.s_c}}]"
-                            data-mdb-dataset-background-color="['rgba(20, 20, 100, 0.3)']"
-                            ></canvas>
-                            <br>
-                        <!-- </div> -->
+                        <canvas
+                        data-mdb-chart="radar"
+                        data-mdb-dataset-label="Macronutrient Quantity"
+                        data-mdb-labels="['Protein', 'Fat' , 'Carbohydrate' , 'Calorie']"
+                        data-mdb-dataset-data="[{{radar_chart_para.s_p}}, {{radar_chart_para.s_f}}, {{radar_chart_para.s_ca}}, {{radar_chart_para.s_c}}]"
+                        data-mdb-dataset-background-color="['rgba(20, 20, 100, 0.3)']"
+                        ></canvas>
+                        <br>
                     </div>
                 </div>
+                {% endif %}
             </div>
             
             <br>

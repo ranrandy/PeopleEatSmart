@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.db import connection
@@ -51,7 +51,10 @@ def user_signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            login(request, AuthenticationForm(data=request.POST).get_user())
+            new_user = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+            login(request, new_user)
             return redirect('/about')
     else:
         form = UserCreationForm()
@@ -133,12 +136,14 @@ def user_profile(request):
 
     context['user'] = realuser
 
-    user_diet = executeSQL("SELECT * FROM Prefers WHERE UserName = \"{}\";".format(realuser.username))[0]
-    user_diet['Carbohydrate'] = round(user_diet['Carbohydrate'], 2)
-    user_diet['Fat'] = round(user_diet['Fat'], 2)
-    user_diet['Protein'] = round(user_diet['Protein'], 2)
-
-    context['user_diet'] = user_diet
+    user_diet = executeSQL("SELECT * FROM Prefers WHERE UserName = \"{}\";".format(realuser.username))
+    if user_diet:
+        user_diet = user_diet[0]
+        user_diet['Carbohydrate'] = round(user_diet['Carbohydrate'], 2)
+        user_diet['Fat'] = round(user_diet['Fat'], 2)
+        user_diet['Protein'] = round(user_diet['Protein'], 2)
+        context['user_diet'] = user_diet
+    
     context['DietTypes'] = executeSQL("SELECT DietType FROM Diet")
     # context['Macros'] = {'carb': carb, 'fat': fat, 'Protein': protein}
 
@@ -222,7 +227,7 @@ def MyRecipePage(request):
             instructions = " && ".join(instruction)
 
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions) VALUES (\"{}\", \"{}\", \"{}\", \"{}\", {}, {}, {}, \"{}\", \"{}\")".format(
+            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions, AvgRating, RatingCount) VALUES (\"{}\", \"{}\", \"{}\", \"{}\", {}, {}, {}, \"{}\", \"{}\", 0, 0)".format(
                 recipe_name, user.username, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions))
             max_recipeID = executeSQL(
                 "SELECT MAX(RecipeID) AS max_id FROM Recipe;")
@@ -469,8 +474,9 @@ def show_recipe(request, recipe_id):
         recipe['new_AvgRating'] = round(recipe['AvgRating'], 2)
 
     max_macros = executeSQL("SELECT max(Calorie) AS m_c, Max(Protein) AS m_p, Max(Fat) AS m_f, Max(Carbohydrate) AS m_ca FROM Ingredient;")[0]
-    radar_chart_para = executeSQL("SELECT SUM(Calorie) / {} AS s_c, SUM(Fat) / {} AS s_f, SUM(Carbohydrate) / {} AS s_ca, SUM(Protein) / {} AS s_p, COUNT(IngredientID) AS c_i FROM Recipe NATURAL JOIN IngredientOf NATURAL JOIN Ingredient WHERE RecipeID = {} GROUP BY RecipeID;".format(max_macros['m_c'], max_macros['m_f'], max_macros['m_ca'], max_macros['m_p'], recipe_id))[0]
-
+    radar_chart_para = executeSQL("SELECT SUM(Calorie) / {} AS s_c, SUM(Fat) / {} AS s_f, SUM(Carbohydrate) / {} AS s_ca, SUM(Protein) / {} AS s_p, COUNT(IngredientID) AS c_i FROM Recipe NATURAL JOIN IngredientOf NATURAL JOIN Ingredient WHERE RecipeID = {} GROUP BY RecipeID;".format(max_macros['m_c'], max_macros['m_f'], max_macros['m_ca'], max_macros['m_p'], recipe_id))
+    if radar_chart_para:
+        radar_chart_para = radar_chart_para[0]
     context = {'recipe': recipe, 'ingredients_list': ingredients_list,
                'instructions_list': instructions_list, 'rating_comment': rating_comment,
                'is_from_current_user': is_from_current_user,

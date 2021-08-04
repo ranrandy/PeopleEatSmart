@@ -151,64 +151,69 @@
           {% if keyword_entered %}
             {% if ingredientInfo %}
               <p style="font-family: fantasy; font-size:xx-large;">Ingredient Result for {{ keyword_entered }}: </p>
-              <table class="table align-middle">
-                <thead>
-                  <tr class="table-light">
-                    <th scope="col">IngredientID</th>
-                    <th scope="col">Ingredient Name</th>
-                    <th scope="col">Calorie</th>
-                    <th scope="col">Protein</th>
-                    <th scope="col">Fat</th>
-                    <th scope="col">Carbohydrate</th>
-                    <th scope="col">Weight</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for ingredient in ingredientInfo%}
-                  <tr class="table-light">
-                    <td>{{ ingredient.IngredientID }}</td>
-                    <td>{{ ingredient.IngredientName }}</td>
-                    <td>{{ ingredient.Calorie }} cal</td>
-                    <td>{{ ingredient.Protein }} g</td>
-                    <td>{{ ingredient.Fat }} g</td>
-                    <td>{{ ingredient.Carbohydrate }} g</td>
-                    <td>100 g</td>
-                  </tr>
-                  {% endfor%}
-                </tbody>
-              </table>
+              <div class="datatable">
+                <table class="table align-middle">
+                  <thead>
+                    <tr class="table-light">
+                      <th scope="col">IngredientID</th>
+                      <th scope="col">Ingredient Name</th>
+                      <th scope="col">Calorie</th>
+                      <th scope="col">Protein</th>
+                      <th scope="col">Fat</th>
+                      <th scope="col">Carbohydrate</th>
+                      <th scope="col">Weight</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for ingredient in ingredientInfo%}
+                    <tr class="table-light">
+                      <td>{{ ingredient.IngredientID }}</td>
+                      <td>{{ ingredient.IngredientName }}</td>
+                      <td>{{ ingredient.Calorie }} cal</td>
+                      <td>{{ ingredient.Protein }} g</td>
+                      <td>{{ ingredient.Fat }} g</td>
+                      <td>{{ ingredient.Carbohydrate }} g</td>
+                      <td>100 g</td>
+                    </tr>
+                    {% endfor%}
+                  </tbody>
+                </table>
+              </div>
             {% elif ingredient_want %}
               <p style="font-family: fantasy; font-size:xx-large;">Ingredient Result for {{ keyword_entered }}: </p>
-              <table class="table align-middle">
-                <thead>
-                  <tr class="table-light">
-                    <th scope="col">IngredientID</th>
-                    <th scope="col">Ingredient Name</th>
-                    <th scope="col">Nutrient Name</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Weight</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for ingredient in ingredient_want %}
-                  <tr class="table-light">
-                    <td>{{ ingredient.IngredientID }}</td>
-                    <td>{{ ingredient.IngredientName }}</td>
-                    <td>{{ ingredient.NutrientName }}</td>
-                    <td>{{ ingredient.Quantity }}</td>
-                    <td>{{ ingredient.Unit }}</td>
-                    <td>100 g</td>
-                  </tr>
-                  {% endfor%}
-                </tbody>
-              </table>
+              <div class="datatable">
+                <table class="table align-middle">
+                  <thead>
+                    <tr class="table-light">
+                      <th scope="col">IngredientID</th>
+                      <th scope="col">Ingredient Name</th>
+                      <th scope="col">Nutrient Name</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Unit</th>
+                      <th scope="col">Weight</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for ingredient in ingredient_want %}
+                    <tr class="table-light">
+                      <td>{{ ingredient.IngredientID }}</td>
+                      <td>{{ ingredient.IngredientName }}</td>
+                      <td>{{ ingredient.NutrientName }}</td>
+                      <td>{{ ingredient.Quantity }}</td>
+                      <td>{{ ingredient.Unit }}</td>
+                      <td>100 g</td>
+                    </tr>
+                    {% endfor%}
+                  </tbody>
+                </table>
+              </div>
             {% else %}
               <div>
                 <p style="font-family: fantasy; font-size:xx-large; text-align: center;">No Such Ingredient</p>
               </div>
             {% endif %}
           {% endif %}
+          <br><br>
         </div>        
     </div>
   </div>
