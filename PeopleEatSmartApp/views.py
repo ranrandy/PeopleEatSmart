@@ -221,13 +221,8 @@ def MyRecipePage(request):
                 user.username, new_recipeID))
     else:
         form = MyRecipeForm()
-<<<<<<< HEAD
     
     my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe WHERE Username = '{}';".format(user.username))
-=======
-
-    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe;")
->>>>>>> cab84cfe1748d537f3006f49c6e8122af6383916
     context["my_recipes"] = my_recipes
 
     for recipe in my_recipes:
