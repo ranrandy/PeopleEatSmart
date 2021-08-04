@@ -468,11 +468,15 @@ def show_recipe(request, recipe_id):
     if recipe['AvgRating']:
         recipe['new_AvgRating'] = round(recipe['AvgRating'], 2)
 
+    max_macros = executeSQL("SELECT max(Calorie) AS m_c, Max(Protein) AS m_p, Max(Fat) AS m_f, Max(Carbohydrate) AS m_ca FROM Ingredient;")[0]
+    radar_chart_para = executeSQL("SELECT SUM(Calorie) / {} AS s_c, SUM(Fat) / {} AS s_f, SUM(Carbohydrate) / {} AS s_ca, SUM(Protein) / {} AS s_p, COUNT(IngredientID) AS c_i FROM Recipe NATURAL JOIN IngredientOf NATURAL JOIN Ingredient WHERE RecipeID = {} GROUP BY RecipeID;".format(max_macros['m_c'], max_macros['m_f'], max_macros['m_ca'], max_macros['m_p'], recipe_id))[0]
+
     context = {'recipe': recipe, 'ingredients_list': ingredients_list,
                'instructions_list': instructions_list, 'rating_comment': rating_comment,
                'is_from_current_user': is_from_current_user,
                'ingredients_at_input_area': ingredients_at_input_area,
-               'instructions_at_input_area': instructions_at_input_area}
+               'instructions_at_input_area': instructions_at_input_area,
+               'radar_chart_para': radar_chart_para}
     return render(request, 'PeopleEatSmartApp/recipe_detail.html', context)
 
 
