@@ -3,27 +3,43 @@
 {% load static %}
 
 {% block content %}
-<!-- <style>
-  * {
-    box-sizing: border-box;
-  }
-  
-  #myInput {
-    background-image: url('/css/searchicon.png');
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-    width: 100%;
-    font-size: 16px;
-    padding: 12px 20px 12px 40px;
-    border: 1px solid #ddd;
-    margin-bottom: 12px;
-  }
-  
-  #myTable th, #myTable td {
-    text-align: left;
-    padding: 12px;
-  }
-  </style> -->
+
+  <style>
+    .filterDiv {
+      float: left;
+      background-color: #2196F3;
+      color: #ffffff;
+      text-align: center;
+      margin: 2px;
+      display: none;
+    }
+    
+    .show {
+      display: block;
+    }
+    
+    .container {
+      overflow: hidden;
+    }
+    
+    /* Style the buttons */
+    .index_btn {
+      border: none;
+      outline: none;
+      padding: 12px 16px;
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      background-color: #2196F3;
+    }
+    
+    .btn.active {
+      background-color:blue;
+      color: white;
+    }
+  </style>
   <br>
   <div style="margin-left: 20%; margin-right: 20%;">
     <div style="background-color: rgba(0, 0, 0, 0.15); ">
@@ -50,7 +66,7 @@
                 <label for="Name"></label>
                 <input id="Name" type="text" class="form-control rounded"  name="Name" placeholder="Keyword Search Ingredient"/>&nbsp
                 <!-- <input type="submit" class="btn btn-primary rounded" value="Search"> -->
-                <button class="btn btn-primary rounded" type="submit">
+                <button class="btn btn-primary rounded" type="submit" name="keyword_search">
                   <i class="fa fa-search"></i>
                 </button>
               </div>
@@ -69,24 +85,69 @@
           >
             Advanced Search
           </a>
+
           <!-- Collapsed content -->
           <div class="collapse mt-3" id="collapseExample">
-            <input type="text" id="myInput" class="form-control rounded" onkeyup="myFunction()" placeholder="Search for micronutrient names.." title="Type in a name">
-              <br>
-              <table id="myTable" class="table align-middle">
-                <tr class="table-light">
-                  <th style="width:60%;">Micronutrient ID</th>
-                  <th style="width:40%;">Micronutrient Name</th>
-                </tr>
-                {% for m in micronutrient %}
-                <tr class="table-light">
-                  <td>{{ m.NutrientID }}</td>
-                  <td>{{ m.NutrientName }}</td>
-                </tr>
-                {% endfor %}
-              </table>
-          </div>
+            <!-- Keyword Search Recipe -->
+            <form action="" method="post">
+              {% csrf_token %}
+                <div class="input-group rounded">
+                  <label for="Name"></label>
+                  <input id="Name" type="text" class="form-control rounded"  name="Name" placeholder="Search Ingredient By Micronutrient"/>&nbsp
+                  <button class="btn btn-primary rounded" type="submit" name="search_by_nutrient">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <p>If you want more than 10 unit ash but less than 10 unit fiber per 100g ingredient, please search: <br> <b>ash,more than, 10; fiber, less than, 10</b> </p>
+            </form>
+            <!-- Keyword Search Recipe -->
+            <div id="myBtnContainer">
+              <!-- <button class="btn active" onclick="filterSelection('all')"> Show all</button> -->
+              <!-- <button class="btn btn-primary active" onclick="filterSelection('Macro')"> Macronutrient</button> -->
+              <button class="btn btn-primary active" onclick="filterSelection('A-C')"> A-C</button>
+              <button class="btn btn-primary" onclick="filterSelection('D-G')"> D-G</button>
+              <button class="btn btn-primary" onclick="filterSelection('H-K')"> H-K</button>
+              <button class="btn btn-primary" onclick="filterSelection('L-O')"> L-O</button>
+              <button class="btn btn-primary" onclick="filterSelection('P-S')"> P-S</button>
+              <button class="btn btn-primary" onclick="filterSelection('T-W')"> T-W</button>
+              <button class="btn btn-primary" onclick="filterSelection('X-Z')"> X-Z</button>
+            </div>
+            
+            <div class="container" style="padding-top: 20px; font-size:20px; color: lightcyan;">
+              <!-- {% for m in macronutrient %}
+              <div class="filterDiv badge rounded-pill bg-light text-black Macro" >{{ m }}</div>
+              {% endfor %} -->
 
+              {% for m in micronutrient_a %}
+              <div class="filterDiv badge rounded-pill bg-light text-black A-C" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_d %}
+              <div class="filterDiv badge rounded-pill bg-light text-black D-G" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_h %}
+              <div class="filterDiv badge rounded-pill bg-light text-black H-K" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_l %}
+              <div class="filterDiv badge rounded-pill bg-light text-black L-O" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_p %}
+              <div class="filterDiv badge rounded-pill bg-light text-black P-S" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_t %}
+              <div class="filterDiv badge rounded-pill bg-light text-black T-W" >{{ m.NutrientName }}</div>
+              {% endfor %}
+            
+              {% for m in micronutrient_x %}
+              <div class="filterDiv badge rounded-pill bg-light text-black X-Z" >{{ m.NutrientName }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          {{query}}
           <br>
           {% if keyword_entered %}
             {% if ingredientInfo %}
@@ -117,6 +178,32 @@
                   {% endfor%}
                 </tbody>
               </table>
+            {% elif ingredient_want %}
+              <p style="font-family: fantasy; font-size:xx-large;">Ingredient Result for {{ keyword_entered }}: </p>
+              <table class="table align-middle">
+                <thead>
+                  <tr class="table-light">
+                    <th scope="col">IngredientID</th>
+                    <th scope="col">Ingredient Name</th>
+                    <th scope="col">Nutrient Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Weight</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ingredient in ingredient_want %}
+                  <tr class="table-light">
+                    <td>{{ ingredient.IngredientID }}</td>
+                    <td>{{ ingredient.IngredientName }}</td>
+                    <td>{{ ingredient.NutrientName }}</td>
+                    <td>{{ ingredient.Quantity }}</td>
+                    <td>{{ ingredient.Unit }}</td>
+                    <td>100 g</td>
+                  </tr>
+                  {% endfor%}
+                </tbody>
+              </table>
             {% else %}
               <div>
                 <p style="font-family: fantasy; font-size:xx-large; text-align: center;">No Such Ingredient</p>
@@ -126,43 +213,49 @@
         </div>        
     </div>
   </div>
-  {% if recipeInfo %}
-      <div class="center">
-          <table>
-              <tr>
-                  <th>Recipe Name</th>
-                  <th>Average Rating (#Ratings)</th>
-                  <th>Picture</th>
-              </tr>
-              {% for recipe in recipeInfo %}
-              <tr>
-                  <td><a href="{% url 'show_recipe' recipe.recipeid %}">{{ recipe.name }}</a></td>
-                  <td>{{ recipe.avgrating}} ({{ recipe.ratingcount}})</td>
-                  <td><a href="{{ recipe.pictureurl }}"><img src="{{ recipe.pictureurl }}" alt="{{ recipe.name}}" style="width: 40%;"></a><br>                  </td>
-              </tr>
-              {% endfor %}
-          </table>
-      </div>
-  {% endif %}
 
 <script>
-function myFunction() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[1];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
+  filterSelection("A-C")
+  function filterSelection(c) {
+    var x, i;
+    x = document.getElementsByClassName("filterDiv");
+    if (c == "all") c = "";
+    for (i = 0; i < x.length; i++) {
+      w3RemoveClass(x[i], "show");
+      if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+    }
   }
-}
+  
+  function w3AddClass(element, name) {
+    var i, arr1, arr2;
+    arr1 = element.className.split(" ");
+    arr2 = name.split(" ");
+    for (i = 0; i < arr2.length; i++) {
+      if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+    }
+  }
+  
+  function w3RemoveClass(element, name) {
+    var i, arr1, arr2;
+    arr1 = element.className.split(" ");
+    arr2 = name.split(" ");
+    for (i = 0; i < arr2.length; i++) {
+      while (arr1.indexOf(arr2[i]) > -1) {
+        arr1.splice(arr1.indexOf(arr2[i]), 1);     
+      }
+    }
+    element.className = arr1.join(" ");
+  }
+  
+  // Add active class to the current button (highlight it)
+  var btnContainer = document.getElementById("myBtnContainer");
+  var btns = btnContainer.getElementsByClassName("btn");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function(){
+      var current = document.getElementsByClassName("active");
+      current[0].className = current[0].className.replace(" active", "");
+      this.className += " active";
+    });
+  }
 </script>
 {% endblock content %}

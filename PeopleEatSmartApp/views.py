@@ -343,7 +343,7 @@ def show_recipe(request, recipe_id):
 def IngredientSearchPageView(request):
     ingredientInfo = []
     context = {}
-    if request.method == 'POST':
+    if request.method == 'POST' and 'keyword_search' in request.POST:
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
             ingredient_name = form.cleaned_data["Name"]
@@ -352,9 +352,62 @@ def IngredientSearchPageView(request):
             context['keyword_entered'] = ingredient_name
     else:
         form = KeywordSearchRecipeForm()
-    micronutrient = executeSQL("SELECT * FROM Micronutrient;")
     context['ingredientInfo'] = ingredientInfo
-    context['micronutrient'] = micronutrient
+
+    if request.method == 'POST' and 'search_by_nutrient' in request.POST:
+        form = KeywordSearchRecipeForm(request.POST)
+        if form.is_valid():
+            nutrient_requirements = form.cleaned_data["Name"]
+            requirement_list = nutrient_requirements.split(";")
+            query = "SELECT IngredientID, IngredientName, Quantity, Unit, NutrientName FROM Contains NATURAL JOIN Micronutrient NATURAL JOIN "
+            subquery_sentence = " (SELECT IngredientID, IngredientName FROM Ingredient NATURAL JOIN Micronutrient NATURAL JOIN Contains WHERE "
+            for requirement in requirement_list:
+                if requirement_list.index(requirement):
+                    subquery_sentence += " OR "
+                phrase = requirement.split(',')
+                nutrient_name = phrase[0].strip()
+                compare_method = phrase[1].strip()
+                quantity = phrase[2].strip()
+                compare_sign = ""
+                if compare_method == "more than":
+                    compare_sign = ">"
+                elif compare_method == "less than":
+                    compare_sign = "<"
+                else:
+                    return Http404("Invalid Comparison Sign!")
+                sql_clause = " (NutrientName = '{}' AND Quantity {} {})".format(nutrient_name, compare_sign, quantity)
+                subquery_sentence += sql_clause
+            subquery_sentence += " Group By IngredientID HAVING COUNT(DISTINCT NutrientName) >= {}) AS ingredient_want ".format(len(requirement_list))
+            where_clause = " WHERE "
+            for requirement in requirement_list:
+                if requirement_list.index(requirement):
+                    where_clause += " OR "
+                nutrient_name = requirement.split(',')[0].strip()
+                where_clause += " NutrientName = '{}' ".format(nutrient_name)
+            query += subquery_sentence + where_clause + ";"
+            result_ingredients = executeSQL(query)
+            context['ingredient_want'] = result_ingredients
+            context['keyword_entered'] = nutrient_requirements
+
+    else:
+        form = KeywordSearchRecipeForm()
+
+    micronutrient_a = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'a%' OR NutrientName LIKE 'b%' OR NutrientName LIKE 'c%' ORDER BY NutrientName;")
+    micronutrient_d = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'd%' OR NutrientName LIKE 'e%' OR NutrientName LIKE 'f%' OR NutrientName LIKE 'g%' ORDER BY NutrientName;")
+    micronutrient_h = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'h%' OR NutrientName LIKE 'i%' OR NutrientName LIKE 'j%' OR NutrientName LIKE 'k%' ORDER BY NutrientName;")
+    micronutrient_l = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'l%' OR NutrientName LIKE 'm%' OR NutrientName LIKE 'n%' OR NutrientName LIKE 'o%' ORDER BY NutrientName;")
+    micronutrient_p = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'p%' OR NutrientName LIKE 'q%' OR NutrientName LIKE 'r%' OR NutrientName LIKE 's%' ORDER BY NutrientName;")
+    micronutrient_t = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 't%' OR NutrientName LIKE 'u%' OR NutrientName LIKE 'v%' OR NutrientName LIKE 'w%' ORDER BY NutrientName;")
+    micronutrient_x = executeSQL("SELECT * FROM Micronutrient WHERE NutrientName LIKE 'x%' OR NutrientName LIKE 'y%' OR NutrientName LIKE 'z%' ORDER BY NutrientName;")
+    
+    context['micronutrient_a'] = micronutrient_a
+    context['micronutrient_d'] = micronutrient_d
+    context['micronutrient_h'] = micronutrient_h
+    context['micronutrient_l'] = micronutrient_l
+    context['micronutrient_p'] = micronutrient_p
+    context['micronutrient_t'] = micronutrient_t
+    context['micronutrient_x'] = micronutrient_x
+    context['macronutrient'] = ['Calorie', 'Protein', 'Fat', 'Carbohydrate']
     return render(request, 'PeopleEatSmartApp/ingredient.html', context)
 
 # Show all the ingredients

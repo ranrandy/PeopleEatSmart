@@ -16,7 +16,6 @@ class RatingCommentForm(forms.Form):
 
 
 class KeywordSearchRecipeForm(forms.Form):
-    # RecipeID = forms.IntegerField(label="RecipeID")
     Name = forms.CharField(label='Name')
 
 
