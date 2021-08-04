@@ -84,15 +84,15 @@ def user_login(request):
     return render(request, 'PeopleEatSmartApp/user/user_login.html', context)
 
 
-def user_ratings(request):
-    ratingInfo = []
-    context = {}
-    user = request.user.username
-    if request.method == 'POST':
-        ratingInfo = executeSQL(
-            "Select RecipeID, RatingValue, COMMENT From RatingComment Where UserName = '{}';".format(user))
-    context = {"test": "hello", 'ratingInfo': ratingInfo}
-    return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
+# def user_ratings(request):
+#     ratingInfo = []
+#     context = {}
+#     user = request.user.username
+#     if request.method == 'POST':
+#         ratingInfo = executeSQL(
+#             "Select RecipeID, RatingValue, COMMENT From RatingComment Where UserName = \"{}\";".format(user))
+#     context = {"test": "hello", 'ratingInfo': ratingInfo}
+#     return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
 
 # User profile page
 
@@ -112,7 +112,7 @@ def user_profile(request):
             calorie = form.cleaned_data["Calories"]
             user = request.user.username
             dietInfo = executeSQL(
-                "SELECT * FROM Diet where DietType= '{}';".format(diet))
+                "SELECT * FROM Diet where DietType= \"{}\";".format(diet))
             if len(dietInfo):
                 dietInfo = dietInfo[0]
                 carb = dietInfo['Carbohydrate'] * calorie / 4
@@ -121,9 +121,9 @@ def user_profile(request):
                 diet = dietInfo['DietType']
                 cursor = connection.cursor()
                 temp = executeSQL(
-                    "Select * from Prefers where UserName = '{}' and DietType = '{}';" .format(user, diet))
+                    "Select * from Prefers where UserName = \"{}\" and DietType = \"{}\";" .format(user, diet))
                 if len(temp):
-                    cursor.execute("UPDATE Prefers SET Carbohydrate = {}, Protein = {}, Fat = {} WHERE UserName = '{}' and DietType = '{}';" .format(
+                    cursor.execute("UPDATE Prefers SET Carbohydrate = {}, Protein = {}, Fat = {} WHERE UserName = \"{}\" and DietType = \"{}\";" .format(
                         carb, protein, fat, user, diet))
                 else:
                     cursor.execute("INSERT INTO Prefers (UserName, DietType, Carbohydrate, Protein, Fat) VALUES(\"{}\", \"{}\",{},{},{});" .format(
@@ -131,10 +131,19 @@ def user_profile(request):
     else:
         form = UserDietType()
 
-    context = {'user': realuser}
+    context['user'] = realuser
 
+    user_diet = executeSQL("SELECT * FROM Prefers WHERE UserName = \"{}\";".format(realuser.username))[0]
+    user_diet['Carbohydrate'] = round(user_diet['Carbohydrate'], 2)
+    user_diet['Fat'] = round(user_diet['Fat'], 2)
+    user_diet['Protein'] = round(user_diet['Protein'], 2)
+
+    context['user_diet'] = user_diet
     context['DietTypes'] = executeSQL("SELECT DietType FROM Diet")
-    context['Macros'] = {'carb': carb, 'fat': fat, 'Protein': protein}
+    # context['Macros'] = {'carb': carb, 'fat': fat, 'Protein': protein}
+
+    ratingInfo = executeSQL("Select RecipeID, Name, RatingValue, COMMENT From RatingComment NATURAL JOIN Recipe Where UserName = \"{}\";".format(realuser.username))
+    context['ratingInfo'] = ratingInfo
 
     return render(request, 'PeopleEatSmartApp/user/user_profile.html', context)
 
@@ -181,7 +190,7 @@ def user_delete(request):
             password = form.cleaned_data["Password"]
             # if not username == "" and not password == ""
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM LoginInfo WHERE UserName = '{}' AND Password = '{}';".format(
+            cursor.execute("DELETE FROM LoginInfo WHERE UserName = \"{}\" AND Password = \"{}\";".format(
                 username, password))
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -213,17 +222,17 @@ def MyRecipePage(request):
             instructions = " && ".join(instruction)
 
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions) VALUES ('{}', '{}', '{}', '{}', {}, {}, {}, '{}', '{}')".format(
+            cursor.execute("INSERT INTO Recipe(Name, Author, description, PictureURL, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions) VALUES (\"{}\", \"{}\", \"{}\", \"{}\", {}, {}, {}, \"{}\", \"{}\")".format(
                 recipe_name, user.username, description, picture_url, cook_time_minutes, prep_time_minutes, total_time_minutes, ingredients, instructions))
             max_recipeID = executeSQL(
                 "SELECT MAX(RecipeID) AS max_id FROM Recipe;")
             new_recipeID = max_recipeID[0]['max_id']
-            cursor.execute("INSERT INTO UserRecipes VALUES ('{}', {})".format(
+            cursor.execute("INSERT INTO UserRecipes VALUES (\"{}\", {})".format(
                 user.username, new_recipeID))
     else:
         form = MyRecipeForm()
 
-    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe WHERE Username = '{}';".format(user.username))
+    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe WHERE Username = \"{}\";".format(user.username))
     context["my_recipes"] = my_recipes
 
     for recipe in my_recipes:
@@ -281,6 +290,9 @@ def RecipeSearchPageView(request):
     else:
         form = KeywordSearchRecipeForm()
 
+    for r in recipeInfo:
+        r['AvgRating'] = round(r['AvgRating'], 2)
+    
     if request.method == 'POST' and 'RecipeOp' in request.POST:
         form = KeywordSearchRecipeForm(request.POST)
         if form.is_valid():
@@ -289,8 +301,8 @@ def RecipeSearchPageView(request):
             n_name = input_list[0].strip()
             weight = input_list[1].strip()
             DietType = input_list[2].strip()
-            dietList = executeSQL("Select Carbohydrate, Fat, Protein from Diet where DietType = '{}'".format(DietType))
-            nList = executeSQL("select NutrientID from Micronutrient where NutrientName = '{}'".format(n_name))
+            dietList = executeSQL("Select Carbohydrate, Fat, Protein from Diet where DietType = \"{}\"".format(DietType))
+            nList = executeSQL("select NutrientID from Micronutrient where NutrientName = \"{}\"".format(n_name))
             input0 = 0
             input1 = 0
             input2 = 0
@@ -367,6 +379,8 @@ def RecipeSearchPageView(request):
 def view_recipe(request):
     recipes_all = executeSQL("SELECT * FROM Recipe limit 1000")
     # recipes_all_json = dumps(recipes_all)
+    for r in recipes_all:
+        r['AvgRating'] = round(r['AvgRating'], 2)
     recipes_1 = []
     recipes_2 = []
     recipes_3 = []
@@ -380,13 +394,7 @@ def view_recipe(request):
         i += 1
     context = {'recipe_1': recipes_1,
                'recipe_2': recipes_2, 'recipe_3': recipes_3}
-    # recipes = executeSQL("SELECT RecipeID, AVG(RatingValue) as avg_r FROM Recipe NATURAL JOIN RatingComment GROUP BY RecipeID;")
     
-    # cursor = connection.cursor()
-    # for r in recipes:
-    #     if r:
-    #         r['avg_r'] = round(r['avg_r'], 2)
-    #         cursor.execute("UPDATE Recipe SET AvgRating = {} WHERE RecipeID = {}".format(r['avg_r'], r['RecipeID']))
     return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
@@ -507,7 +515,7 @@ def IngredientSearchPageView(request):
                     compare_sign = "<"
                 else:
                     return Http404("Invalid Comparison Sign!")
-                sql_clause = " (NutrientName = '{}' AND Quantity {} {})".format(
+                sql_clause = " (NutrientName = \"{}\" AND Quantity {} {})".format(
                     nutrient_name, compare_sign, quantity)
                 subquery_sentence += sql_clause
             subquery_sentence += " Group By IngredientID HAVING COUNT(DISTINCT NutrientName) >= {}) AS ingredient_want ".format(
@@ -517,7 +525,7 @@ def IngredientSearchPageView(request):
                 if requirement_list.index(requirement):
                     where_clause += " OR "
                 nutrient_name = requirement.split(',')[0].strip()
-                where_clause += " NutrientName = '{}' ".format(nutrient_name)
+                where_clause += " NutrientName = \"{}\" ".format(nutrient_name)
             query += subquery_sentence + where_clause + ";"
             result_ingredients = executeSQL(query)
             context['ingredient_want'] = result_ingredients
@@ -560,33 +568,8 @@ def view_ingredient(request):
     return render(request, 'PeopleEatSmartApp/ingredients_all.html', context)
 
 
-''' Abandoned Views '''
-# Add ratings and comments for recipes.
-# def rate_recipe(request):
-#     recipename = ""
-#     username = "randy"
-#     ratingvalue = -1
-#     comment = ""
-#     # if this is a POST request we need to process the form data
-#     if request.method == 'POST':
-#         # create a form instance and populate it with data from the request:
-#         form = RatingCommentForm(request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data["UserName"]
-#             recipename = form.cleaned_data["RecipeName"]
-#             ratingvalue = form.cleaned_data["RatingValue"]
-#             comment = form.cleaned_data["Comment"]
-#             cursor = connection.cursor()
-#             cursor.execute("INSERT INTO RatingComment (RatingValue, COMMENT, UserName, RecipeID) VALUES ({}, \"{}\", \"{}\", (SELECT RecipeID FROM Recipe WHERE Name = \"{}\"));".format(
-#                 str(ratingvalue), comment, username, recipename))
-#             return HttpResponse("Successful Comment!")
-#     # if a GET (or any other method) we'll create a blank form
-#     else:
-#         form = RatingCommentForm()
-#     context = {'recipename': recipename, 'username': username,
-#                'ratingvalue': ratingvalue, 'comment': comment}
-#     return render(request, 'PeopleEatSmartApp/recipe_rating.html', context)
 
+''' Abandoned Views '''
 # First advanced query from stage 3.
 # def advanced_search(request):
 # recipeInfo = []
@@ -599,6 +582,7 @@ def view_ingredient(request):
 #     form = KeywordSearchRecipeForm()
 # context = {'recipeInfo': recipeInfo}
 # return render(request, 'PeopleEatSmartApp/advanced_search.html', context)
+
 
 # Second advanced query from stage 3.
 # def advanced_search_2(request):

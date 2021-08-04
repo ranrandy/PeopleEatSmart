@@ -4,90 +4,109 @@
 {% block content %}
 
 <article>
-    {% csrf_token %}
+    <!-- {% csrf_token %} -->
   <header>
       <style>
   h1 {color:aqua;}
   h1 {text-align: center;}
   p {color:blue;}
 </style>
-    <h1>Hello {{user.username}} !</h1>
 </article>
 
-<table class="table align-middle">
-    {% csrf_token %}
-  <thead>
-    <tr class ="table-primary">
-      <th scope="col"></th>
-      <th scope="col">User Name</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class ="table-secondary">
-      <th scope="row">Information</th>
-      <td>{{user.username}}</td>
-    </tr>
-  </tbody>
-</table>
-
-
-<form action="" method="post">
-  {% csrf_token %}
-    <div class="input-group rounded">
-      <label for="DietType"></label>
-      <input id="DietType" type="text" class="form-control rounded"  name="DietType" placeholder="Enter DietType"/>&nbsp
-      <!-- <input type="submit" class="btn btn-primary rounded" value="Search"> -->
-      <input id="Calories" type="int" class="form-control rounded"  name="Calories" placeholder="Enter Calories"/>&nbsp
-      <button class="btn btn-primary rounded" type="submit">
-        <i class="fa fa-search"></i>
-      </button>
-    </div>
-</form>
-<p>Valid DietTypes</p>
-<p>{{ DietTypes }}</p>
-<p>{{ dietInfo}}</p>
-<p>Macro info according to diettype and calories</p>
-<p>{{ Macros}}</p>
-
 <div style="margin-left: 20%; margin-right: 20%;">
-  <div style="background-color: rgba(0, 0, 0, 0.15); padding-left: 2%; padding-right: 2%; color: black;">
-    <br>
-    <img
-      border: 1px solid #ddd;
-      src="{% static 'assets/MyReviews.png' %}"
-      alt=""
-      width = "400"
-      height="40"
-      />
-    <hr>
-    {{test}}
-    {% if ratingInfo %}
+  <div style="background-color: rgba(0, 0, 0, 0.15); ">
+    <div style="padding-left: 5%; padding-right: 5%;">
+      <br>
+      <h1>Hello {{user.username}} !</h1>
+      <table class="table align-middle">
+        {% csrf_token %}
+      <thead>
+        <tr class ="table-primary">
+          <th scope="col"></th>
+          <th scope="col">User Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class ="table-secondary">
+          <th scope="row">Information</th>
+          <td>{{user.username}}</td>
+        </tr>
+      </tbody>
+    </table>
 
-        <table class="table align-middle">
-        <thead>
-            <tr class="table-light">
-            <th scope="col">Recipe Name</th>
-            <th scope="col">RatingID</th>
-            <th scope="col">Rating Value</th>
-            <th scope="col">Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for temp in ratingInfo %}
-            <tr class="table-light">
-            <td>{{ temp.Name }}</td>
-            <td>{{ temp.ID }}</td>
-            <td>{{ temp.RatingValue }}</td>
-            <td>{{ temp.COMMENT }} cal</td>
-            </tr>
-            {% endfor%}
-        </tbody>
-        </table>
-    {% else %}
-        <div>
-        <p style="font-family: fantasy; font-size:xx-large; text-align: center;">You have not rated any recipe yet...</p>
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="card text-black mb-3" style="width: 100%;">
+        <div class="card-body">
+            <label for="DietType"></label>
+            <br>
+            <input id="DietType" type="text" class="form-control rounded"  name="DietType" value="{{user_diet.DietType}}" placeholder="Enter DietType"/>&nbsp
+            <br>
+            <p><b>Valid DietTypes:</b> &nbsp
+            {% for diet in DietTypes %}
+              {{ diet.DietType }} &nbsp
+            {% endfor %}
+            </p>
+            <input id="Calories" type="int" class="form-control rounded"  name="Calories" placeholder="Enter Calories"/>&nbsp
+            <br>
+            <button class="btn btn-info rounded" type="submit">Update</button>
         </div>
-    {% endif %}
+      </div>
+    </form>
+
+    <div class="card text-black mb-3" style="width: 100%;">
+      <div class="card-body">
+        <p>Macro info according to diet type and calories</p>
+        <p>Carbohydrate: {{ user_diet.Carbohydrate }}, Fat: {{ user_diet.Fat}}, Protein: {{ user_diet.Protein }}</p>
+      </div>
+    </div>
+
+    <div class="card text-black mb-3" style="width: 100%;">
+      <div class="card-body">
+        <!-- <div style="margin-left: 20%; margin-right: 20%;"> -->
+          <!-- <div style="background-color: rgba(0, 0, 0, 0.15); padding-left: 2%; padding-right: 2%; color: black;"> -->
+            <br>
+            <img
+              border: 1px solid #ddd;
+              src="{% static 'assets/MyReviews_updated.png' %}"
+              alt=""
+              height="60px"
+              class="rounded"
+              />
+            <hr>
+            {% if ratingInfo %}
+                <table class="table align-middle">
+                <thead>
+                    <tr class="table-light">
+                    <th scope="col">Recipe Name</th>
+                    <!-- <th scope="col">RatingID</th> -->
+                    <th scope="col">Rating Value</th>
+                    <th scope="col">Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for temp in ratingInfo %}
+                    <tr class="table-light">
+                    <td><a href="{% url 'show_recipe' temp.RecipeID %}">{{ temp.Name }}</a></td>
+                    <!-- <td>{{ temp.RecipeID }}</td> -->
+                    <td>{{ temp.RatingValue }}</td>
+                    <td>{{ temp.COMMENT }} cal</td>
+                    </tr>
+                    {% endfor%}
+                </tbody>
+                </table>
+            {% else %}
+                <div>
+                <p style="font-family: fantasy; font-size:xx-large; text-align: center;">You have not rated any recipe yet...</p>
+                </div>
+            {% endif %}
+          <!-- </div> -->
+        <!-- </div> -->
+      </div>
+    </div>
+
+  </div>
 </div>
+
 
 {% endblock content %}
