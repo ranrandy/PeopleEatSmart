@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.db import connection
 from json import dumps
-import re
+
 
 
 ''' Execute SQL Query and Return a Dictionary '''
@@ -43,6 +43,7 @@ def user_signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            login(request, AuthenticationForm(data=request.POST).get_user())
             return redirect('/about')
     else:
         form = UserCreationForm()
@@ -197,7 +198,7 @@ def MyRecipePage(request):
     else:
         form = MyRecipeForm()
     
-    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe;")
+    my_recipes = executeSQL("SELECT * FROM UserRecipes NATURAL JOIN Recipe WHERE Username = '{}';".format(user.username))
     context["my_recipes"] = my_recipes
     
     for recipe in my_recipes:
@@ -280,6 +281,7 @@ def view_recipe(request):
         i += 1
     context = {'recipe_1': recipes_1,
                'recipe_2': recipes_2, 'recipe_3': recipes_3}
+    
     return render(request, 'PeopleEatSmartApp/recipes_all.html', context)
 
 # Show certain recipe based on its RecipeID added at the end of the URL.
@@ -329,6 +331,9 @@ def show_recipe(request, recipe_id):
     
     ingredients_at_input_area = recipe['ingredients'].replace(' && ', ';')
     instructions_at_input_area = recipe['instructions'].replace(' && ', ';')
+
+    if recipe['AvgRating']:
+        recipe['new_AvgRating'] = round(recipe['AvgRating'], 2)
 
     context = {'recipe': recipe, 'ingredients_list': ingredients_list,
                'instructions_list': instructions_list, 'rating_comment': rating_comment,

@@ -73,6 +73,7 @@
             <hr>
 
             <h1>My Recipes</h1>
+            {% if my_recipes %}
             {% for recipe in my_recipes %}
                 <div class="card text-black" style="width: 100%;">
                     <div class="card-body">
@@ -129,6 +130,10 @@
                 </div>
                 <br>
             {% endfor %}
+            {% else %}
+            <h2 style="text-align: center;">(Empty)</h2>
+            <br><br>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -35,7 +35,83 @@
               </div>
           </form>
           <!-- Keyword Search Recipe -->
-          <hr><br>
+
+          <hr>
+          <!-- Buttons trigger collapse -->
+          <a
+          data-mdb-toggle="collapse"
+          href="#collapseExample"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+          style="font-size: medium; color: lightblue"
+          >
+            Advanced Search
+          </a>
+
+          <!-- Collapsed content -->
+          <div class="collapse mt-3" id="collapseExample">
+            <!-- Keyword Search Recipe -->
+            <form action="" method="post">
+              {% csrf_token %}
+                <div class="input-group rounded">
+                  <label for="Name"></label>
+                  <input id="Name" type="text" class="form-control rounded"  name="Name" placeholder="Search Ingredient By Micronutrient"/>&nbsp
+                  <button class="btn btn-primary rounded" type="submit" name="search_by_nutrient">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <p>If you want more than 10 unit ash but less than 10 unit fiber per 100g ingredient, please search: <br> <b>ash,more than, 10; fiber, less than, 10</b> </p>
+            </form>
+            <!-- Keyword Search Recipe -->
+            <div id="myBtnContainer">
+              <!-- <button class="btn active" onclick="filterSelection('all')"> Show all</button> -->
+              <!-- <button class="btn btn-primary active" onclick="filterSelection('Macro')"> Macronutrient</button> -->
+              <button class="btn btn-primary active" onclick="filterSelection('A-C')"> A-C</button>
+              <button class="btn btn-primary" onclick="filterSelection('D-G')"> D-G</button>
+              <button class="btn btn-primary" onclick="filterSelection('H-K')"> H-K</button>
+              <button class="btn btn-primary" onclick="filterSelection('L-O')"> L-O</button>
+              <button class="btn btn-primary" onclick="filterSelection('P-S')"> P-S</button>
+              <button class="btn btn-primary" onclick="filterSelection('T-W')"> T-W</button>
+              <button class="btn btn-primary" onclick="filterSelection('X-Z')"> X-Z</button>
+            </div>
+            
+            <div class="container" style="padding-top: 20px; font-size:20px; color: lightcyan;">
+              <!-- {% for m in macronutrient %}
+              <div class="filterDiv badge rounded-pill bg-light text-black Macro" >{{ m }}</div>
+              {% endfor %} -->
+
+              {% for m in micronutrient_a %}
+              <div class="filterDiv badge rounded-pill bg-light text-black A-C" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_d %}
+              <div class="filterDiv badge rounded-pill bg-light text-black D-G" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_h %}
+              <div class="filterDiv badge rounded-pill bg-light text-black H-K" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_l %}
+              <div class="filterDiv badge rounded-pill bg-light text-black L-O" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_p %}
+              <div class="filterDiv badge rounded-pill bg-light text-black P-S" >{{ m.NutrientName }}</div>
+              {% endfor %}
+
+              {% for m in micronutrient_t %}
+              <div class="filterDiv badge rounded-pill bg-light text-black T-W" >{{ m.NutrientName }}</div>
+              {% endfor %}
+            
+              {% for m in micronutrient_x %}
+              <div class="filterDiv badge rounded-pill bg-light text-black X-Z" >{{ m.NutrientName }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <br>
           {% if keyword_entered %}
             {% if recipe_1 and recipe_2 and recipe_3 %}
               <p style="font-family: fantasy; font-size:xx-large;">Recipe Result for {{ keyword_entered }}: </p>
@@ -110,8 +186,6 @@
               </div>
             {% endif %}
           {% endif %}
-
-          
         </div>        
     </div>
   </div>
